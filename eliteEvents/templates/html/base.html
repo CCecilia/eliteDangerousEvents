@@ -25,21 +25,20 @@
         <div class="cover-container">
 
             <header class="masthead clearfix">
-            <div class="inner">
               <h3 class="masthead-brand">Elite Dangerous Events</h3>
               <nav class="nav nav-masthead">
-                <a class="nav-link active" href="#">Home</a>
+                <a class="nav-link {% if page == 'index' %}active{% endif %}" href="/">Home</a>
                 <a class="nav-link" href="#">All Events</a>
                 <a class="nav-link" href="#">Create Event</a>
+                <a class="nav-link {% if page == 'signin' %}active{% endif %}" href="signin/">Sign In/Register</a>
               </nav>
-            </div>
             </header>
             {% block content %}
             {% endblock %}
             <footer class="mastfoot">
             <div class="inner">
               <p>Created by CMDR Doughboy856</p>
-              <p><a href=""></a></p>
+              <p><a class="footer-link" href="https://github.com/CCecilia/eliteDangerousEvents" target="_blank">view source code</a></p>
             </div>
           </footer>
 

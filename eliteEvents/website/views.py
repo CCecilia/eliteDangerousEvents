@@ -13,8 +13,17 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 def index(request):
-    context = {}
+    context = {
+    	'page': 'index'
+    }
     return render(request, 'html/index.html', context)
+
+
+def signin(request):
+    context = {
+    	'page':'signin'
+    }
+    return render(request, 'html/signin.html', context)
 
 
 # AJAX

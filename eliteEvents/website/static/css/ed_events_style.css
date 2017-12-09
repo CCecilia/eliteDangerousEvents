@@ -63,6 +63,9 @@ body {
  */
 
 .masthead {
+  width: 90%;
+  left: 2%;
+  padding-right: 5rem;
   margin-bottom: 2rem;
 }
 
@@ -84,7 +87,7 @@ body {
 }
 
 .nav-masthead .nav-link + .nav-link {
-  margin-left: 1rem;
+  margin-left: 2rem;
 }
 
 .nav-masthead .active {
@@ -113,7 +116,7 @@ body {
   padding: .75rem 1.25rem;
   font-weight: 700;
 }
-.event-search-input{
+.event-search-input, .signin-input, .register-input{
   width: 20em;
   height: 2.3em;
   margin: 2% 0;
@@ -121,11 +124,12 @@ body {
   color: #c06400;
   border-color:  #c06400;
 }
-.event-search-btn{
+.event-search-btn, .signin-btn, .register-btn{
+  background-color:  transparent;
   color: #c06400;
   border-color:  #c06400;
 }
-.event-search-btn:hover{
+.event-search-btn:hover, .signin-btn:hover{
   color: #FFF;
   border-color:  #c06400;
   background-color:  #c06400;
@@ -140,6 +144,35 @@ body {
   color: #c06400;
 }
 
+.footer-link, .footer-link:hover, .footer-link:visited{
+  text-decoration: none;
+  color: #c06400;
+}
+
+
+/*Sign*/
+.signin, .register{
+  color: #FFF;
+  cursor: pointer;
+}
+
+.active-signin{
+  text-decoration: underline;
+  color: #c06400;
+}
+
+.signin-form, .register-form{
+  text-align: center;
+}
+
+.signin-input, .register-input{
+  margin-left: 39%;
+  display: block;
+}
+
+.register-form{
+  display: none;
+}
 
 /*
  * Affix and center
@@ -169,10 +202,10 @@ body {
   }
 }
 
-@media (min-width: 62em) {
+/*@media (min-width: 62em) {
   .masthead,
   .mastfoot,
   .cover-container {
     width: 42rem;
   }
-}
+}*/
