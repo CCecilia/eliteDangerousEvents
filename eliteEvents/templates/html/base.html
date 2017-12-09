@@ -1,0 +1,61 @@
+<!doctype html>
+{% load staticfiles %}
+<html lang="en">
+  <head>
+    <title>ED Events</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Event creator for Elite Dangerous">
+    <meta name="author" content="Christian Cecilia">
+    <meta name="keywords" content="elite dangerous, events, ED, elite, dangerous, community goals">
+    <link rel="icon" href="http://edassets.org/img/pilots-federation/rank-9.png">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <!-- ED Events CSS -->
+    <link href="{% static 'css/ed_events_style.css' %}" rel="stylesheet"/>
+  </head>
+  <body>
+
+    <div class="site-wrapper">
+
+      <div class="site-wrapper-inner">
+
+        <div class="cover-container">
+
+            <header class="masthead clearfix">
+            <div class="inner">
+              <h3 class="masthead-brand">Elite Dangerous Events</h3>
+              <nav class="nav nav-masthead">
+                <a class="nav-link active" href="#">Home</a>
+                <a class="nav-link" href="#">All Events</a>
+                <a class="nav-link" href="#">Create Event</a>
+              </nav>
+            </div>
+            </header>
+            {% block content %}
+            {% endblock %}
+            <footer class="mastfoot">
+            <div class="inner">
+              <p>Created by CMDR Doughboy856</p>
+              <p><a href=""></a></p>
+            </div>
+          </footer>
+
+        </div>
+
+      </div>
+
+    </div>
+    
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+    <!-- ED Events JS -->
+    <script type="text/javascript" src="{% static 'js/ed_events_scripts.js' %}"></script>
+  </body>
+</html>
