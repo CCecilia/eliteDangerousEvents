@@ -1,0 +1,56 @@
+{% extends "html/base.html" %}
+{% block content %}
+{% load staticfiles %}
+          <main role="main" class="inner cover">
+            <h1 class="cover-heading">Create Event</h1>
+            <form name="event-create-form" method="POST" action="/event/create/">
+            	<h2 class="event-label cover-heading">Event Title</h2>
+	            <input class="event-name" name="event-title" placeholder="Event Title" type="text">
+	            <h2 class="event-label cover-heading">Event Type</h2>
+	            <ul class="event-type-list">
+	            	<li>
+	            		<img class="event-type-img" src="http://edassets.org/img/pilots-federation/combat/rank-9-combat.png" alt="Combat" data-type="combat"/><br>
+	            		Combat
+	            	</li>
+	            	<li>
+	            		<img class="event-type-img" src="http://edassets.org/img/pilots-federation/explorer/rank-9.png" alt="Exploration" data-type="exploration"/><br>
+	            		Exploration
+	            	</li>
+	            	<li>
+	            		<img class="event-type-img" src="http://edassets.org/img/pilots-federation/trading/rank-9-trading.png" alt="Trading" data-type="trading"/><br>
+	            		Trading
+	            	</li>
+	            </ul>
+	            <h2 class="event-label cover-heading">Start/End</h2>
+	            <ul class="event-type-list">
+	            	<li>
+	            		<label for="event-start-date">Start Date:</label>
+	            		<input class="event-start-date" type="date" name="event-start-date"/>
+	            		<label for="event-start-time">Start Time:</label>
+	            		<input class="event-start-time" type="time" name="event-start-time"/>
+	            	</li>
+	            	<li>
+	            		<label for="event-end-date">End Date:</label>
+	            		<input class="event-end-date" type="date" name="event-end-date"/>
+	            		<label for="event-end-time">End Time:</label>
+	            		<input class="event-end-time" type="time" name="event-end-time"/>
+	            	</li>
+	            </ul>
+	            <input type="hidden" name="event-type"/>
+	            <h2 class="event-label cover-heading">Event Location</h2>
+	            <input class="event-location" name="event-location" placeholder="Event Location" type="text">
+	            <h2 class="event-label cover-heading">Description</h2>
+	            <textarea class="event-description" name="event-description" cols="75" rows="5"></textarea>
+	            {% csrf_token %}
+	            <input type="hidden" name="user-id" value="{{ user.id }}"/>
+	            <br>
+	            <br>
+	            {% if user.is_authenticated %}
+	            	<button class="btn btn-outline event-create-btn" type="submit">Create</button>
+	        	{% else %}
+	        		<p class="signin-error">Sign in required for creating events</p>
+	        	{% endif %}
+            </form>
+	            
+          </main>
+{% endblock %}

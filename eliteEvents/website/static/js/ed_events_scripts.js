@@ -155,4 +155,80 @@ $(document).ready(function(){
         //Stop html form submission
         e.preventDefault(); 
     });
+
+    //Event type Select
+    $(".event-type-img").click(function(e) {
+    	//add select class to element
+    	$(".event-type-img").removeClass('event-type-selected');
+    	$(this).addClass('event-type-selected');
+    	//add value to input
+    	$("input[name='event-type']").val($(this).attr('data-type'));
+    });
+
+    //Event type Select
+    $(".event-location").keyup(function(e) {
+    	var query = $(this).val();
+
+    	if(query.length > 2){
+    		console.log('long enough for search');
+    	}
+    });
+
+    //Event create
+    $("form[name='event-create-form']").submit(function(e) {
+    	//get data
+    	var event_title = $("input[name='event-title']");
+    	var event_type = $("input[name='event-type']");
+    	var event_location = $("input[name='event-location']");
+    	var event_description = $(".event-description");
+    	var user_id = $("input[name='event-creator-id']").val();
+
+    	//check fields
+    	if( !event_title.val() ){
+	    	//add border
+	    	event_title.css('border','1px solid red').focus();
+	    	//reset input 
+	    	setTimeout(function resetInput() {
+                event_title.css("border","1px solid #c06400;");
+            }, 3000);
+    	}else if( !event_type.val() ){
+    		alert('please select an event type\ncombat, exploration, trading');
+    	}else if( !event_location.val() ){
+	    	//add border
+	    	event_location.css('border','1px solid red').focus();
+	    	//reset input 
+	    	setTimeout(function resetInput() {
+                event_location.css("border","1px solid #c06400;");
+            }, 3000);
+    		
+    	}else if( !event_description.val() ){
+	    	//add border
+	    	event_description.css('border','1px solid red').focus();
+	    	//reset input 
+	    	setTimeout(function resetInput() {
+                event_description.css("border","1px solid #c06400;");
+            }, 3000);
+
+    	}
+
+        // serialize and submit search form
+        $.ajax({
+            type: "POST",
+            url: "/event/create/",
+            data: $(this).serialize(), 
+            success: function(data){
+                if( data.status == 'success'){
+                	alert('event created');
+                }else{
+                	alert('event failed');
+                }
+            },
+            fail: function(data){
+                alert('unknown server error occurred');
+            }
+        });
+
+        //Stop html form submission
+        e.preventDefault(); 
+    });
 });

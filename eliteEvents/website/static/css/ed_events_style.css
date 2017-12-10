@@ -116,7 +116,8 @@ body {
   padding: .75rem 1.25rem;
   font-weight: 700;
 }
-.event-search-input, .signin-input, .register-input{
+.event-search-input, .signin-input, 
+.register-input, .event-name, .event-location{
   width: 20em;
   height: 2.3em;
   margin: 2% 0;
@@ -124,12 +125,13 @@ body {
   color: #c06400;
   border-color:  #c06400;
 }
-.event-search-btn, .signin-btn, .register-btn{
+.event-search-btn, .signin-btn, .register-btn, .event-create-btn{
   background-color:  transparent;
   color: #c06400;
   border-color:  #c06400;
 }
-.event-search-btn:hover, .signin-btn:hover, .register-btn:hover{
+.event-search-btn:hover, .signin-btn:hover, .register-btn:hover,
+.event-create-btn:hover{
   color: #FFF;
   border-color:  #c06400;
   background-color:  #c06400;
@@ -179,6 +181,57 @@ body {
   color: red;
 }
 
+
+/*Create Event*/
+.event-type-list{
+  list-decoration: none;
+  margin: 0;
+  padding: 0;
+
+}
+
+.event-type-list li{
+  display: inline-block;
+  width:20%;
+  
+}
+
+.event-type-img{
+  width: 35%;
+  height: auto;
+  cursor: pointer;
+  padding: 5%;
+}
+
+.event-type-selected{
+  border: 2px solid  #c06400;
+   border-radius: 30%;
+}
+
+.event-label{
+   margin-top: 5%;
+}
+
+.event-description{
+  background-color: #333;;
+  color: #c06400;
+  border-color:  #c06400;
+}
+
+.event-create-btn{
+  width: 10%;
+}
+
+.event-start-date, .event-start-time,.event-end-date, 
+.event-end-time{
+  width: 10em;
+  height: 2.3em;
+  margin: 2% 0;
+  background-color: #333;;
+  color: #c06400;
+  border-color:  #c06400;
+}
+
 /*
  * Affix and center
  */
@@ -190,7 +243,6 @@ body {
     top: 0;
   }
   .mastfoot {
-    position: fixed;
     bottom: 0;
   }
 
