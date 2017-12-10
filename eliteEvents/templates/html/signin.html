@@ -11,10 +11,11 @@
             </form>
             <form  class="register-form" name="register-form" action="/register/" method="post">
             	{% csrf_token %}
+            	<p class='register-error'>test</p>
             	<input class="register-input" name="register-username" type="text" placeholder="Username"/>
             	<input class="register-input" name="register-email" type="Email" placeholder="Email"/>
-            	<input class="register-input" name="register-password" type="text" placeholder="Password"/>
-            	<input class="register-input" name="register-confirm-password" type="text" placeholder="Confirm Password"/>
+            	<input class="register-input" name="register-password" type="password" placeholder="Password"/>
+            	<input class="register-input" name="register-confirm-password" type="password" placeholder="Confirm Password"/>
             	<button class="btn btn-outline register-btn">Register</button>
             </form>  
           </main>

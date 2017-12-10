@@ -129,7 +129,7 @@ body {
   color: #c06400;
   border-color:  #c06400;
 }
-.event-search-btn:hover, .signin-btn:hover{
+.event-search-btn:hover, .signin-btn:hover, .register-btn:hover{
   color: #FFF;
   border-color:  #c06400;
   background-color:  #c06400;
@@ -172,6 +172,11 @@ body {
 
 .register-form{
   display: none;
+}
+
+.register-error{
+  display: none;
+  color: red;
 }
 
 /*
