@@ -2,8 +2,10 @@ __author__ = 'christian.cecilia1@gmail.com'
 
 import os
 import hashlib
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout
 from .models import *
 
 # Global
@@ -34,8 +36,7 @@ def register(request):
     # dec vars
     username = str(request.POST['register-username']).lower()
     email = str(request.POST['register-email']).lower()
-    password = str(request.POST['register-password']).encode('utf-8')
-    h = hashlib.md5()
+    password = str(request.POST['register-password'])
 
     # check if username or email is used
     username_check = User.objects.filter(username=username)
@@ -52,15 +53,11 @@ def register(request):
             'error_msg': 'email already in use'
         }
     else:
-        # hash password
-        h.update(password)
-
         # create user
-        User.objects.create(
-            username=username,
-            email=email,
-            password=h.hexdigest()
-        )
+        user = User.objects.create_user(username, email, password)
+
+        # login user
+        login(request, user)
 
         # create response
         response = {
@@ -69,6 +66,38 @@ def register(request):
 
     # send reponse JSON
     return JsonResponse(response)
+
+
+def loginUser(request):
+    # dec vars
+    username = request.POST['signin-username']
+    password = request.POST['signin-password']
+    print(request.POST['csrfmiddlewaretoken'])
+    user = authenticate(request, username=username, password=password)
+
+    if user is not None:
+        login(request, user)
+        # create response
+        response = {
+            'status': 'success'
+        }
+    else:
+        print('login failed')
+        # create response
+        response = {
+            'status': 'fail'
+        }
+
+    # send reponse JSON
+    return JsonResponse(response)
+
+
+def logoutUser(request):
+    # log out user
+    logout(request)
+
+    # send to home page
+    return redirect('index')
 
 
 def searchEvents(request):

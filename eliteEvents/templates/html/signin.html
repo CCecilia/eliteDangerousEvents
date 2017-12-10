@@ -3,15 +3,17 @@
 {% load staticfiles %}
           <main role="main" class="inner cover">
             <h1 class="cover-heading"><signin class="signin active-signin">Sign In</signin> | <register class="register">Register</register></h1>
-            <form  class="signin-form" name="signin-form" action="/signin/" method="post">
+            <form  class="signin-form" name="signin-form" action="/login/" method="post">
+            	
+            	<p class='signin-error'>Username/password incorrect</p>
             	{% csrf_token %}
             	<input class="signin-input" name="signin-username" type="text" placeholder="Username"/>
-            	<input class="signin-input" name="signin-password" type="text" placeholder="Password"/>
+            	<input class="signin-input" name="signin-password" type="password" placeholder="Password"/>
             	<button class="btn btn-outline signin-btn">Sign In</button>
             </form>
             <form  class="register-form" name="register-form" action="/register/" method="post">
             	{% csrf_token %}
-            	<p class='register-error'>test</p>
+            	<p class='register-error'></p>
             	<input class="register-input" name="register-username" type="text" placeholder="Username"/>
             	<input class="register-input" name="register-email" type="Email" placeholder="Email"/>
             	<input class="register-input" name="register-password" type="password" placeholder="Password"/>

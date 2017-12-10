@@ -111,4 +111,48 @@ $(document).ready(function(){
         //Stop html form submission
         e.preventDefault(); 
     });
+
+    //login form
+    $("form[name='signin-form']").submit(function(e) {
+    	console.log('log in')
+    	//reset error if recurring attempt
+    	$(".signin-error").hide();
+
+    	//validate
+		var username = $("input[name='signin-username']").val();
+		var password = $("input[name='signin-password']").val();
+    	
+    	//check for blanks
+	    if( !username || !password ){
+	    	//add border
+	    	$("input[name='signin-username'], input[name='signin-password']").css('border','1px solid red');
+	    	//reset input 
+	    	setTimeout(function resetInput() {
+                $("input[name='signin-username'], input[name='signin-password']").css("border","1px solid #c06400;");
+            }, 3000);
+	    	return false
+
+	    }else{
+	    	// serialize and submit search form
+	        $.ajax({
+	            type: "POST",
+	            url: "/login/",
+	            data: $(this).serialize(), 
+	            success: function(data){
+	                if( data.status == 'success'){
+	                	//redirect to homepage
+	                	window.location.href = window.location.protocol + "//" + window.location.host + "/";
+	                }else{
+	                	$(".signin-error").show();
+	                }
+	            },
+	            fail: function(data){
+	                alert('unknown error occurred');
+	            }
+	        });
+	    }
+
+        //Stop html form submission
+        e.preventDefault(); 
+    });
 });
