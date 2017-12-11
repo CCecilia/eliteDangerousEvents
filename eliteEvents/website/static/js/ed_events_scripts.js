@@ -8,6 +8,14 @@ function isValidEmailAddress(emailAddress) {
 
 
 $(document).ready(function(){
+	//add csrf token to headers
+    $.ajaxSetup({
+        headers: {
+            "X-CSRFToken": $("input[name='csrfmiddlewaretoken']").val()
+        }
+    });
+
+
 	//Event search form
     $("form[name='event-search-form']").submit(function(e) {
         //serialize and submit search form
@@ -165,7 +173,7 @@ $(document).ready(function(){
     	$("input[name='event-type']").val($(this).attr('data-type'));
     });
 
-    //Event type Select
+    //Event location autofill 
     $(".event-location").keyup(function(e) {
     	var query = $(this).val();
 
@@ -191,16 +199,19 @@ $(document).ready(function(){
 	    	setTimeout(function resetInput() {
                 event_title.css("border","1px solid #c06400;");
             }, 3000);
+            return false
     	}else if( !event_type.val() ){
     		alert('please select an event type\ncombat, exploration, trading');
+            return false
     	}else if( !event_location.val() ){
 	    	//add border
 	    	event_location.css('border','1px solid red').focus();
+            return false
 	    	//reset input 
 	    	setTimeout(function resetInput() {
                 event_location.css("border","1px solid #c06400;");
             }, 3000);
-    		
+            return false
     	}else if( !event_description.val() ){
 	    	//add border
 	    	event_description.css('border','1px solid red').focus();
@@ -208,7 +219,7 @@ $(document).ready(function(){
 	    	setTimeout(function resetInput() {
                 event_description.css("border","1px solid #c06400;");
             }, 3000);
-
+            return false
     	}
 
         // serialize and submit search form
@@ -230,5 +241,40 @@ $(document).ready(function(){
 
         //Stop html form submission
         e.preventDefault(); 
+    });
+
+    //Event search select
+    $(".event-search-input").keyup(function(e) {
+    	var event_search = $(this).val();
+		console.log(event_search);
+
+		//serialize and submit search form
+        $.ajax({
+            type: "POST",
+            url: "/event/search/",
+            dataType: 'json',
+            data: JSON.stringify({event_search: event_search}), 
+            success: function(data){
+                if( data.status == 'success'){
+                	$('.event-search-results').empty();
+                	var event_results = data.event_search_results;
+			    	for ( i = 0; i < event_results.length; i++ ) { 
+			    		var event_preview_html = ''+
+			    		'<div class="event-preview">' +
+			    			'<img class="event-type-img-sm" src="http://edassets.org/img/pilots-federation/combat/rank-9-combat.png" alt="Combat" data-type="combat"/>' +
+			    			'<p>'+event_results[i].name+'</p>' +
+			    			'<p>'+event_results[i].start_date+'</p>' +
+			    			'<input type="hidden" name="event-id" value="'+event_results[i].start_date+'"/>' + 
+		    			'</div>';
+	    				$(event_preview_html).appendTo($('.event-search-results'));
+					}
+                }else{
+                	console.log('search failed');
+                }
+            },
+            fail: function(data){
+                alert('unknown server error occurred');
+            }
+        });
     });
 });

@@ -50,6 +50,7 @@ body {
 .cover-container {
   margin-right: auto;
   margin-left: auto;
+  padding-top: 3%;
 }
 
 /* Padding for spacing */
@@ -203,6 +204,13 @@ body {
   padding: 5%;
 }
 
+.event-type-img-sm{
+  width: 25%;
+  height: auto;
+  cursor: pointer;
+  padding: 5%;
+}
+
 .event-type-selected{
   border: 2px solid  #c06400;
    border-radius: 30%;
@@ -232,6 +240,12 @@ body {
   border-color:  #c06400;
 }
 
+.event-preview{
+  width: 22%;
+  margin: 1%;
+  border: 2px solid  #c06400;
+  border-radius: 30%;
+}
 /*
  * Affix and center
  */

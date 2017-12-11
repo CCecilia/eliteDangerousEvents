@@ -1,12 +1,12 @@
 __author__ = 'christian.cecilia1@gmail.com'
 
 import os
+import json
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import csrf_exempt
-from datetime import datetime
 from .models import Event
 
 # Global
@@ -110,12 +110,23 @@ def logoutUser(request):
 
 def searchEvents(request):
     # dec vars
-    query = str(request.POST['event-search'])
-    print(query)
+    event_search = json.loads(request.body)['event_search']
+
+    # filter for matching events
+    event_search_results = list(Event.objects.filter(
+        name__icontains=event_search
+    ).values(
+        'id',
+        'name',
+        'event_type',
+        'start_date',
+    ))
+    print(event_search_results)
 
     # create response
     response = {
         'status': 'success',
+        'event_search_results': event_search_results
     }
 
     # send reponse JSON
@@ -151,25 +162,20 @@ def createEvent(request):
     user_id = int(request.POST['user-id'])
     creator = User.objects.get(id=user_id)
 
-    print(event_start_date,'\n',event_start_time)
+    # Format dates for database
+    event_start_formatted = event_start_date + ' ' + event_start_time
+    event_end_formatted = event_end_date + ' ' + event_end_time
 
-    # event_start_formatted = datetime.strptime(event_start_date + ' ' +event_start_time, '%Y %b %d  %I:%M%p')
-    # event_end_formatted = datetime.strptime(event_end_date + ' ' +event_end_time, '%Y %b %d  %I:%M%p')
-
-    event_start_formatted =event_start_date + ' ' +event_start_time
-    event_end_formatted = event_end_date + ' ' +event_end_time
-
-    print(event_start_formatted, '\n', event_end_formatted)
     # create event
     Event.objects.create(
-            name=event_title,
-            event_type=event_type,
-            creator=creator,
-            location=event_location,
-            description=event_description,
-            start_date=event_start_formatted,
-            end_date=event_end_formatted
-    	)
+        name=event_title,
+        event_type=event_type,
+        creator=creator,
+        location=event_location,
+        description=event_description,
+        start_date=event_start_formatted,
+        end_date=event_end_formatted
+    )
 
     # #create response
     response = {
