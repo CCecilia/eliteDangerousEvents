@@ -16,24 +16,24 @@ $(document).ready(function(){
     });
 
 
-	//Event search form
-    $("form[name='event-search-form']").submit(function(e) {
-        //serialize and submit search form
-        $.ajax({
-            type: "POST",
-            url: "/searchEvents/",
-            data: $(this).serialize(), 
-            success: function(data){
-                alert('event search success'); 
-            },
-            fail: function(data){
-                alert('event search failed'); 
-            }
-        });
+	// //Event search form
+ //    $("form[name='event-search-form']").submit(function(e) {
+ //        //serialize and submit search form
+ //        $.ajax({
+ //            type: "POST",
+ //            url: "/searchEvents/",
+ //            data: $(this).serialize(), 
+ //            success: function(data){
+ //                alert('event search success'); 
+ //            },
+ //            fail: function(data){
+ //                alert('event search failed'); 
+ //            }
+ //        });
 
-        //Stop html form submission
-        e.preventDefault(); 
-    });
+ //        //Stop html form submission
+ //        e.preventDefault(); 
+ //    });
 
 
     //signin/register indentifiers
@@ -120,9 +120,9 @@ $(document).ready(function(){
         e.preventDefault(); 
     });
 
+
     //login form
     $("form[name='signin-form']").submit(function(e) {
-    	console.log('log in')
     	//reset error if recurring attempt
     	$(".signin-error").hide();
 
@@ -164,14 +164,17 @@ $(document).ready(function(){
         e.preventDefault(); 
     });
 
+
     //Event type Select
     $(".event-type-img").click(function(e) {
     	//add select class to element
     	$(".event-type-img").removeClass('event-type-selected');
     	$(this).addClass('event-type-selected');
+
     	//add value to input
     	$("input[name='event-type']").val($(this).attr('data-type'));
     });
+
 
     //Event location autofill 
     $(".event-location").keyup(function(e) {
@@ -182,9 +185,10 @@ $(document).ready(function(){
     	}
     });
 
+
     //Event create
     $("form[name='event-create-form']").submit(function(e) {
-    	//get data
+    	//get form inputs
     	var event_title = $("input[name='event-title']");
     	var event_type = $("input[name='event-type']");
     	var event_location = $("input[name='event-location']");
@@ -201,6 +205,7 @@ $(document).ready(function(){
             }, 3000);
             return false
     	}else if( !event_type.val() ){
+    		//send user alert 
     		alert('please select an event type\ncombat, exploration, trading');
             return false
     	}else if( !event_location.val() ){
@@ -228,11 +233,8 @@ $(document).ready(function(){
             url: "/event/create/",
             data: $(this).serialize(), 
             success: function(data){
-                if( data.status == 'success'){
-                	alert('event created');
-                }else{
-                	alert('event failed');
-                }
+                //refresh screen
+                window.location.reload();
             },
             fail: function(data){
                 alert('unknown server error occurred');
@@ -243,38 +245,134 @@ $(document).ready(function(){
         e.preventDefault(); 
     });
 
+
     //Event search select
     $(".event-search-input").keyup(function(e) {
+    	//get search query
     	var event_search = $(this).val();
-		console.log(event_search);
 
-		//serialize and submit search form
-        $.ajax({
-            type: "POST",
-            url: "/event/search/",
-            dataType: 'json',
-            data: JSON.stringify({event_search: event_search}), 
-            success: function(data){
-                if( data.status == 'success'){
+		if( event_search.length > 1){
+			//serialize and submit search form
+	        $.ajax({
+	            type: "POST",
+	            url: "/event/search/",
+	            dataType: 'json',
+	            data: JSON.stringify({event_search: event_search}), 
+	            success: function(data){
+	            	//clear any previous results
                 	$('.event-search-results').empty();
+
+                	//iterate through results 
                 	var event_results = data.event_search_results;
 			    	for ( i = 0; i < event_results.length; i++ ) { 
+
+			    		//set null attendee count to 0
+			    		if( !event_results[i].attendees ){
+			    			var attendee_count = 0;
+			    		}else{
+			    			var attendee_count = event_results[i].attendees
+			    		}
+
+			    		//create event preview element
 			    		var event_preview_html = ''+
-			    		'<div class="event-preview">' +
+			    		'<div class="event-preview" data-id="'+event_results[i].id+'">' +
 			    			'<img class="event-type-img-sm" src="http://edassets.org/img/pilots-federation/combat/rank-9-combat.png" alt="Combat" data-type="combat"/>' +
 			    			'<p>'+event_results[i].name+'</p>' +
-			    			'<p>'+event_results[i].start_date+'</p>' +
-			    			'<input type="hidden" name="event-id" value="'+event_results[i].start_date+'"/>' + 
+			    			'<p>'+event_results[i].start_date+'</p>' + 
+			    			'<span><i class="fa fa-users" aria-hidden="true"></i></span><span class="attendee-count">'+attendee_count+'</span>' +
 		    			'</div>';
-	    				$(event_preview_html).appendTo($('.event-search-results'));
+
+		    			//add preview to resuts section
+	    				$('.event-search-results').append(event_preview_html);
 					}
-                }else{
-                	console.log('search failed');
-                }
+	            },
+	            fail: function(data){
+	                alert('unknown server error occurred');
+	            }
+	        });
+		}		
+    });
+
+
+    //Show detail popup for event 
+	$('.event-search-results').on('click', '.event-preview', function() {
+		//dec event id
+	    var event_id = $(this).attr('data-id');
+
+        //get event details and display popup
+        $.ajax({
+            type: "POST",
+            url: "/event/details/",
+            data: JSON.stringify({event_id: event_id}), 
+            success: function(data){
+            	var event = JSON.parse(data.event);
+            	console.log(event[0].fields);
+            	// clear out popup text
+            	$(
+            		'.event-popup-name,'+
+            		'.event-popup-description,'+
+            		'.event-popup-start-date,'+
+            		'.event-popup-location'
+        		).empty();
+            	
+            	//fill in with event info
+            	if(event[0].fields.event_type == 'combat'){
+            		$(".event-popup-type").attr({
+            			'src': 'http://edassets.org/img/pilots-federation/combat/rank-9-combat.png',
+            			'alt': event[0].fields.event_type
+            		})
+            	}else if(event[0].fields.event_type == 'exploration'){
+            		$(".event-popup-type").attr({
+            			'src': 'http://edassets.org/img/pilots-federation/explorer/rank-9.png',
+            			'alt': event[0].fields.event_type
+            		})
+            	}else{
+            		$(".event-popup-type").attr({
+            			'src': 'http://edassets.org/img/pilots-federation/trading/rank-9-trading.png',
+            			'alt': event[0].fields.event_type
+            		})
+            	}
+            	console.log(event[0].fields.id);
+            	$('.event-popup-name').text(event[0].fields.name);
+            	$('.event-popup-description').text(event[0].fields.description);
+            	$('.event-popup-start-date').text('Start Date:'+ event[0].fields.start_date);
+            	$('.event-popup-start-time').text('Start Time:'+ event[0].fields.start_time);
+            	$('.event-popup-end-date').text('End Date:' + event[0].fields.end_date);
+            	$('.event-popup-end-time').text('End Time:' + event[0].fields.end_time);
+            	$('.event-popup-location').text('Location:' + event[0].fields.location);
+            	$('input[name="event-id"]').val(event[0].pk);
+            	$('#event-details-popup').fadeIn(300);
+            },
+            fail: function(data){
+                alert('unknown error occurred');
+            }
+        });
+	});
+
+
+    //hide event details popup
+	$('.cover-container').click(function(e) {
+		$('#event-details-popup').hide();
+	});
+
+
+	//join event
+	$("form[name='join-event']").submit(function(e) {
+        // serialize and submit join form
+        $.ajax({
+            type: "POST",
+            url: "/event/join/",
+            data: $(this).serialize(), 
+            success: function(data){
+            	window.location.reload();
             },
             fail: function(data){
                 alert('unknown server error occurred');
             }
         });
-    });
+
+        //Stop html form submission
+        e.preventDefault();
+	});
+
 });

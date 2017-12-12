@@ -8,8 +8,11 @@ urlpatterns = [
     path('createEvent/', views.createEventPage, name='createEventPage'),
     path('event/create/', views.createEvent, name='createEvent'),
     path('event/search/', views.searchEvents, name='searchEvents'),
+    path('event/details/', views.eventDetails, name='eventDetails'),
+    path('event/join/', views.eventJoin, name='eventJoin'),
     path('register/', views.register, name='register'),
     path('login/', views.loginUser, name='loginUser'),
     path('logout/', views.logoutUser, name='logoutUser'),
-    path('searchSolarSystems/', views.searchSolarSystems, name='searchSolarSystems'),
+    path('allEvents/', views.allEvents, name='allEvents'),
+    path('myEvents/', views.myEvents, name='myEvents'),
 ]

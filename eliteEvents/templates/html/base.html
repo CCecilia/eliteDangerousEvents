@@ -13,6 +13,8 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- ED Events CSS -->
     <link href="{% static 'css/ed_events_style.css' %}" rel="stylesheet"/>
   </head>
@@ -28,10 +30,11 @@
               <h3 class="masthead-brand">Elite Dangerous Events</h3>
               <nav class="nav nav-masthead">
                 <a class="nav-link {% if page == 'index' %}active{% endif %}" href="/">Home</a>
-                <a class="nav-link" href="#">All Events</a>
+                <a class="nav-link {% if page == 'allEvents' %}active{% endif %}" href="/allEvents/">All Events</a>
                 {% if user.is_authenticated %}
-                  <a class="nav-link" href="/createEvent/" {% if page == 'createEvent' %}active{% endif %}>Create Event</a>
-                
+                  <a class="nav-link {% if page == 'createEvent' %}active{% endif %}" href="/createEvent/" >Create Event</a>
+                  
+                  <a class="nav-link {% if page == 'myEvents' %}active{% endif %}" href="/myEvents/" >My Events</a>
                   <a class="nav-link" href="/logout/">Log out</a>
                 {% else %}
                   <a class="nav-link {% if page == 'signin' %}active{% endif %}" href="/signin/">Sign In/Register</a>
@@ -51,6 +54,34 @@
 
       </div>
 
+    </div>
+    <div id="event-details-popup">
+      <img class="event-popup-type event-type-img-sm" src="" alt=""/>
+      <p class="event-popup-name"></p>
+      <p class="event-popup-description"></p>
+      <p class="event-popup-location"></p>
+      <p class="event-popup-start-date"></p>
+      <p class="event-popup-start-time"></p>
+      <p class="event-popup-end-date"></p>
+      <p class="event-popup-end-time"></p>
+      <span><i class="fa fa-users" aria-hidden="true"></i></span><span class="attedance"></span>
+      {% if user.is_authenticated %}
+        {% if page == 'myEvents' %}
+          <br>
+          <br>
+          <button class="join-event" type="submit">Edit</button>
+          <br>
+          <br>
+          <button class="join-event" type="submit">Remove</button>
+        {% else %}
+          <form name="join-event" method="POST" action="/event/join/">
+            <input type="hidden" name="user-id" value="{{ user.id }}">
+            <input type="hidden" name="event-id">
+            <br>
+            <button class="join-event" type="submit">Join</button>
+          </form>
+        {% endif %}
+      {% endif %}
     </div>
     
 

@@ -2,13 +2,12 @@
 {% block content %}
 {% load staticfiles %}
           <main role="main" class="inner cover">
-            <h1 class="cover-heading">Search Events</h1>
+            <h1 class="cover-heading">{{ coverHeading }}</h1>
             <form name="event-search-form" action="/searchEvents/" method="post">
             	{% csrf_token %}
             	<input class="event-search-input" name="event-search" type="text" placeholder="Search Events"/>
-            	<button class="btn btn-outline event-search-btn">Search</button>
+            	<!-- <button class="btn btn-outline event-search-btn">Search</button> -->
             </form>  
-            <div class="row event-search-results">
-            </div>
+            <div class="row event-search-results"></div>
           </main>
 {% endblock %}

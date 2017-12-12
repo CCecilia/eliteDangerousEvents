@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import csrf_exempt
+from django.core import serializers
 from .models import Event
 
 # Global
@@ -18,7 +19,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 def index(request):
     context = {
-        'page': 'index'
+        'page': 'index',
+        'coverHeading': 'Search Events'
     }
     return render(request, 'html/index.html', context)
 
@@ -32,9 +34,35 @@ def signin(request):
 
 def createEventPage(request):
     context = {
-        'page': 'createEvent'
+        'page': 'createEvent',
+        'coverHeading': 'Create Event'
     }
     return render(request, 'html/createEvent.html', context)
+
+
+def allEvents(request):
+    # Get Events
+    events = Event.objects.all()
+
+    context = {
+        'page': 'allEvents',
+        'coverHeading': 'All Events',
+        'events': events
+    }
+    return render(request, 'html/allEvents.html', context)
+
+
+def myEvents(request):
+    # Dec  Vars
+    user = request.user
+    events = Event.objects.filter(creator=user)
+    
+    context = {
+        'page': 'myEvents',
+        'coverHeading': 'My Events',
+        'events': events
+    }
+    return render(request, 'html/myEvents.html', context)
 
 
 # AJAX
@@ -112,7 +140,7 @@ def searchEvents(request):
     # dec vars
     event_search = json.loads(request.body)['event_search']
 
-    # filter for matching events
+    # filter for matching events and serialize for json
     event_search_results = list(Event.objects.filter(
         name__icontains=event_search
     ).values(
@@ -120,13 +148,53 @@ def searchEvents(request):
         'name',
         'event_type',
         'start_date',
+        'attendees'
     ))
-    print(event_search_results)
 
     # create response
     response = {
         'status': 'success',
         'event_search_results': event_search_results
+    }
+
+    # send reponse JSON
+    return JsonResponse(response)
+
+
+def eventDetails(request):
+    # get event
+    event_id = json.loads(request.body)['event_id']
+    event = Event.objects.get(id=event_id)
+
+    # serialize json
+    serialized_event = serializers.serialize('json', [event])
+    print(serialized_event)
+    # create response
+    response = {
+        'status': 'success',
+        'event': serialized_event
+    }
+
+    # send reponse JSON
+    return JsonResponse(response)
+
+
+def eventJoin(request):
+    # get event
+    user_id = int(request.POST['user-id'])
+    event_id = int(request.POST['event-id'])
+    user = User.objects.get(id=user_id)
+    event = Event.objects.get(id=event_id)
+
+    # add user to event
+    event.attendees.add(user)
+
+    attendance = event.attendees.all().count()
+
+    # create response
+    response = {
+        'status': 'success',
+        'attendance': attendance
     }
 
     # send reponse JSON
@@ -151,7 +219,7 @@ def searchSolarSystems(request):
 
 def createEvent(request):
     # dec vars
-    event_title = str(request.POST['event-title'])
+    event_title = str(request.POST['event-title']).title()
     event_type = str(request.POST['event-type'])
     event_location = str(request.POST['event-location'])
     event_description = str(request.POST['event-description'])
@@ -162,10 +230,6 @@ def createEvent(request):
     user_id = int(request.POST['user-id'])
     creator = User.objects.get(id=user_id)
 
-    # Format dates for database
-    event_start_formatted = event_start_date + ' ' + event_start_time
-    event_end_formatted = event_end_date + ' ' + event_end_time
-
     # create event
     Event.objects.create(
         name=event_title,
@@ -173,8 +237,10 @@ def createEvent(request):
         creator=creator,
         location=event_location,
         description=event_description,
-        start_date=event_start_formatted,
-        end_date=event_end_formatted
+        start_date=event_start_date,
+        start_time=event_start_time,
+        end_date=event_end_date,
+        end_time=event_end_time
     )
 
     # #create response
