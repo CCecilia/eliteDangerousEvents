@@ -87,4 +87,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 ## Acknowledgments
 
 * [Frontier Developments](https://www.frontier.co.uk/) for making an awesome space sim [Elite Dangerous](https://www.elitedangerous.com/)
-* CMDR SpyTec for [ED Assets](http://edassets.org/)
+* CMDR (SpyTec)[https://github.com/SpyTec] for [edassets.org](https://github.com/SpyTec/EDAssets) [Git repo](https://github.com/SpyTec/EDAssets)
