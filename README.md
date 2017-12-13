@@ -68,7 +68,7 @@ python manage.py test
 
 ## Built With
 
-* [Python3.6.3]
+* [Python3.6.3](https://www.python.org/downloads/release/python-363/)
 * [Django](https://www.djangoproject.com/)
 * [PIP](https://pypi.python.org/pypi/pip)
 
@@ -86,5 +86,5 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## Acknowledgments
 
-* Frontier Developments for making an awesome space sim
-* CMDR SpyTec for creating (http://edassets.org/)
+* [Frontier Developments](https://www.frontier.co.uk/) for making an awesome space sim [Elite Dangerous](https://www.elitedangerous.com/)
+* CMDR SpyTec for [ED Asstes](http://edassets.org/)
