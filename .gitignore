@@ -174,8 +174,8 @@ Temporary Items
 
 
 # Elastic Beanstalk Files
-.elasticbeanstalk/*
-.ebextensions/*
+eliteEvents/.elasticbeanstalk/*
+eliteEvents/.ebextensions/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
 
