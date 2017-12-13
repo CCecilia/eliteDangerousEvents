@@ -69,8 +69,9 @@ python manage.py test
 ## Built With
 
 * [Python3.6.3](https://www.python.org/downloads/release/python-363/)
-* [Django](https://www.djangoproject.com/)
 * [PIP](https://pypi.python.org/pypi/pip)
+* [Django](https://www.djangoproject.com/)
+* [Bootstrap](http://getbootstrap.com/)
 
 ## Versioning
 

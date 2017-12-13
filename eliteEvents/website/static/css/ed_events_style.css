@@ -178,7 +178,7 @@ body {
 }
 
 .signin-input, .register-input{
-  margin-left: 39%;
+  margin: 1% auto;
   display: block;
 }
 
