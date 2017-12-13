@@ -2,12 +2,10 @@ __author__ = 'christian.cecilia1@gmail.com'
 
 import os
 import json
-from datetime import datetime
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
-from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
 from .models import Event
 
@@ -56,8 +54,13 @@ def allEvents(request):
 def myEvents(request):
     # Dec  Vars
     user = request.user
-    events = Event.objects.filter(creator=user)
-    
+
+    # redirect to signin page if user not found
+    try:
+        events = Event.objects.filter(creator=user)
+    except TypeError:
+        return redirect('signin')
+
     context = {
         'page': 'myEvents',
         'coverHeading': 'My Events',
@@ -66,7 +69,7 @@ def myEvents(request):
     return render(request, 'html/myEvents.html', context)
 
 
-def editEvent(request,event_id):
+def editEvent(request, event_id):
     # Dec  Vars
     event = get_object_or_404(Event, pk=event_id)
     context = {
@@ -100,6 +103,11 @@ def register(request):
             'status': 'fail',
             'error_msg': 'email already in use'
         }
+    elif len(password) < 8:
+        response = {
+            'status': 'fail',
+            'error_msg': 'password must be atleast 8 characters long'
+        }
     else:
         # create user
         user = User.objects.create_user(username, email, password)
@@ -120,7 +128,7 @@ def loginUser(request):
     # dec vars
     username = request.POST['signin-username']
     password = request.POST['signin-password']
-    # Auth user 
+    # Auth user
     user = authenticate(request, username=username, password=password)
 
     if user is not None:
@@ -130,7 +138,6 @@ def loginUser(request):
             'status': 'success'
         }
     else:
-        print('login failed')
         # create response
         response = {
             'status': 'fail'
@@ -180,7 +187,7 @@ def eventDetails(request):
 
     # serialize json
     serialized_event = serializers.serialize('json', [event])
-    print(serialized_event)
+
     # create response
     response = {
         'status': 'success',
@@ -259,7 +266,6 @@ def updateEvent(request, event_id):
     event_end_time = str(request.POST['edit-event-end-time'])
     event = get_object_or_404(Event, pk=event_id)
 
-    print(event_start_date)
     # Update Event
     event.name = event_title
     event.event_type = event_type
