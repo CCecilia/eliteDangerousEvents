@@ -2,7 +2,8 @@ __author__ = 'christian.cecilia1@gmail.com'
 
 import os
 import json
-from django.shortcuts import render, redirect
+from datetime import datetime
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
@@ -63,6 +64,17 @@ def myEvents(request):
         'events': events
     }
     return render(request, 'html/myEvents.html', context)
+
+
+def editEvent(request,event_id):
+    # Dec  Vars
+    event = get_object_or_404(Event, pk=event_id)
+    context = {
+        'page': 'editEvent',
+        'coverHeading': 'Edit Event',
+        'event': event
+    }
+    return render(request, 'html/editEvent.html', context)
 
 
 # AJAX
@@ -164,7 +176,7 @@ def searchEvents(request):
 def eventDetails(request):
     # get event
     event_id = json.loads(request.body)['event_id']
-    event = Event.objects.get(id=event_id)
+    event = get_object_or_404(Event, pk=event_id)
 
     # serialize json
     serialized_event = serializers.serialize('json', [event])
@@ -183,8 +195,8 @@ def eventJoin(request):
     # get event
     user_id = int(request.POST['user-id'])
     event_id = int(request.POST['event-id'])
-    user = User.objects.get(id=user_id)
-    event = Event.objects.get(id=event_id)
+    user = User.objects.get(pk=user_id)
+    event = Event.objects.get(pk=event_id)
 
     # add user to event
     event.attendees.add(user)
@@ -201,22 +213,6 @@ def eventJoin(request):
     return JsonResponse(response)
 
 
-@csrf_exempt
-def searchSolarSystems(request):
-    # dec vars
-    solar_system = str(request.POST['query'])
-
-    print(solar_system)
-
-    # create response
-    response = {
-        'status': 'success',
-    }
-
-    # send reponse JSON
-    return JsonResponse(response)
-
-
 def createEvent(request):
     # dec vars
     event_title = str(request.POST['event-title']).title()
@@ -227,8 +223,7 @@ def createEvent(request):
     event_start_time = str(request.POST['event-start-time'])
     event_end_date = str(request.POST['event-end-date'])
     event_end_time = str(request.POST['event-end-time'])
-    user_id = int(request.POST['user-id'])
-    creator = User.objects.get(id=user_id)
+    creator = request.user
 
     # create event
     Event.objects.create(
@@ -244,6 +239,67 @@ def createEvent(request):
     )
 
     # #create response
+    response = {
+        'status': 'success',
+    }
+
+    # send reponse JSON
+    return JsonResponse(response)
+
+
+def updateEvent(request, event_id):
+    # dec vars
+    event_title = str(request.POST['event-title']).title()
+    event_type = str(request.POST['event-type'])
+    event_location = str(request.POST['event-location'])
+    event_description = str(request.POST['event-description'])
+    event_start_date = str(request.POST['edit-event-start-date'])
+    event_start_time = str(request.POST['edit-event-start-time'])
+    event_end_date = str(request.POST['edit-event-end-date'])
+    event_end_time = str(request.POST['edit-event-end-time'])
+    event = get_object_or_404(Event, pk=event_id)
+
+    print(event_start_date)
+    # Update Event
+    event.name = event_title
+    event.event_type = event_type
+    event.location = event_location
+    event.description = event_description
+
+    # only update new dates/times
+    if event_start_date:
+        event.start_date = event_start_date
+
+    if event_end_date:
+        event.end_date = event_end_date
+
+    if event_start_time:
+        event.start_time = event_start_time
+
+    if event_end_time:
+        event.end_time = event_end_time
+
+    # Save updated event
+    event.save()
+
+    # create response
+    response = {
+        'status': 'success',
+    }
+
+    # send reponse JSON
+    return JsonResponse(response)
+
+
+def removeEvent(request):
+    # dec vars
+    event_id = json.loads(request.body)['event_id']
+    event = get_object_or_404(Event, pk=event_id)
+
+    # delete event
+    event.delete()
+
+    # create response
     response = {
         'status': 'success',
     }

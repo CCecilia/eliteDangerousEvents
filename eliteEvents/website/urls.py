@@ -15,4 +15,7 @@ urlpatterns = [
     path('logout/', views.logoutUser, name='logoutUser'),
     path('allEvents/', views.allEvents, name='allEvents'),
     path('myEvents/', views.myEvents, name='myEvents'),
+    path('event/edit/<int:event_id>/', views.editEvent, name='editEvent'),
+    path('event/update/<int:event_id>/', views.updateEvent, name='updateEvent'),
+    path('event/remove/', views.removeEvent, name='removeEvent'),
 ]

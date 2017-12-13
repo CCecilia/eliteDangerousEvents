@@ -16,26 +16,6 @@ $(document).ready(function(){
     });
 
 
-	// //Event search form
- //    $("form[name='event-search-form']").submit(function(e) {
- //        //serialize and submit search form
- //        $.ajax({
- //            type: "POST",
- //            url: "/searchEvents/",
- //            data: $(this).serialize(), 
- //            success: function(data){
- //                alert('event search success'); 
- //            },
- //            fail: function(data){
- //                alert('event search failed'); 
- //            }
- //        });
-
- //        //Stop html form submission
- //        e.preventDefault(); 
- //    });
-
-
     //signin/register indentifiers
     $("signin, register").click(function(e) {
     	//remove active identfier
@@ -189,41 +169,33 @@ $(document).ready(function(){
     //Event create
     $("form[name='event-create-form']").submit(function(e) {
     	//get form inputs
-    	var event_title = $("input[name='event-title']");
     	var event_type = $("input[name='event-type']");
-    	var event_location = $("input[name='event-location']");
-    	var event_description = $(".event-description");
-    	var user_id = $("input[name='event-creator-id']").val();
+    	var form_inputs = [
+    		$("input[name='event-title']"),
+    		$("input[name='event-location']"),
+			$(".event-description"),
+			$("input[name='event-start-date']"),
+			$("input[name='event-start-time']"),
+			$("input[name='event-end-date']"),
+			$("input[name='event-end-time']")
+		];
+    	
+    	//check for blanks
+    	for ( i = 0; i < form_inputs.length; i++ ) { 
+		    if( !form_inputs[i].val() ){
+		    	//add border
+		    	form_inputs[i].css('border','1px solid red').focus();
+		    	//reset input 
+		    	setTimeout(function resetInput() {
+	                form_inputs[i].css("border","1px solid #c06400;");
+	            }, 3000);
+		    	return false
+		    }
+		}
 
-    	//check fields
-    	if( !event_title.val() ){
-	    	//add border
-	    	event_title.css('border','1px solid red').focus();
-	    	//reset input 
-	    	setTimeout(function resetInput() {
-                event_title.css("border","1px solid #c06400;");
-            }, 3000);
-            return false
-    	}else if( !event_type.val() ){
+		if( !event_type.val() ){
     		//send user alert 
     		alert('please select an event type\ncombat, exploration, trading');
-            return false
-    	}else if( !event_location.val() ){
-	    	//add border
-	    	event_location.css('border','1px solid red').focus();
-            return false
-	    	//reset input 
-	    	setTimeout(function resetInput() {
-                event_location.css("border","1px solid #c06400;");
-            }, 3000);
-            return false
-    	}else if( !event_description.val() ){
-	    	//add border
-	    	event_description.css('border','1px solid red').focus();
-	    	//reset input 
-	    	setTimeout(function resetInput() {
-                event_description.css("border","1px solid #c06400;");
-            }, 3000);
             return false
     	}
 
@@ -306,7 +278,6 @@ $(document).ready(function(){
             data: JSON.stringify({event_id: event_id}), 
             success: function(data){
             	var event = JSON.parse(data.event);
-            	console.log(event[0].fields);
             	// clear out popup text
             	$(
             		'.event-popup-name,'+
@@ -332,7 +303,7 @@ $(document).ready(function(){
             			'alt': event[0].fields.event_type
             		})
             	}
-            	console.log(event[0].fields.id);
+            	console.log();
             	$('.event-popup-name').text(event[0].fields.name);
             	$('.event-popup-description').text(event[0].fields.description);
             	$('.event-popup-start-date').text('Start Date:'+ event[0].fields.start_date);
@@ -340,6 +311,7 @@ $(document).ready(function(){
             	$('.event-popup-end-date').text('End Date:' + event[0].fields.end_date);
             	$('.event-popup-end-time').text('End Time:' + event[0].fields.end_time);
             	$('.event-popup-location').text('Location:' + event[0].fields.location);
+            	$('.attedance').text(event[0].fields.attendees.length);
             	$('input[name="event-id"]').val(event[0].pk);
             	$('#event-details-popup').fadeIn(300);
             },
@@ -350,9 +322,10 @@ $(document).ready(function(){
 	});
 
 
-    //hide event details popup
-	$('.cover-container').click(function(e) {
+    //hide popups
+	$('.cover-container, .remove-event-no').click(function(e) {
 		$('#event-details-popup').hide();
+		$("#confirm-removal-popup").hide();
 	});
 
 
@@ -373,6 +346,114 @@ $(document).ready(function(){
 
         //Stop html form submission
         e.preventDefault();
+	});
+
+
+    //edit event page change
+	$('.edit-event').click(function(e) {
+		var event_id = $('input[name="event-id"]').val();
+		//navigate to edit page
+		document.location.href = '/event/edit/'+event_id+'/';
+	});
+
+
+	//change date inputs type
+	$('input[name="edit-event-start-date"], input[name="edit-event-end-date"]').click(function(e) {
+		$(this).prop('type','date');
+	});
+
+
+	//change time inputs type
+	$('input[name="edit-event-start-time"], input[name="edit-event-end-time"]').focusin(function(e) {
+		$(this).prop('type','time');
+	});
+
+
+	//Event edit
+    $("form[name='event-edit-form']").submit(function(e) {
+    	//get form inputs
+    	var event_title = $("input[name='event-title']");
+    	var event_type = $("input[name='event-type']");
+    	var event_location = $("input[name='event-location']");
+    	var event_description = $(".event-description");
+    	var user_id = $("input[name='event-creator-id']").val();
+    	var event_id = $("input[name='event-creator-id']").val();
+
+    	//check fields
+    	if( !event_title.val() ){
+	    	//add border
+	    	event_title.css('border','1px solid red').focus();
+	    	//reset input 
+	    	setTimeout(function resetInput() {
+                event_title.css("border","1px solid #c06400;");
+            }, 3000);
+            return false
+    	}else if( !event_type.val() ){
+    		//send user alert 
+    		alert('please select an event type\ncombat, exploration, trading');
+            return false
+    	}else if( !event_location.val() ){
+	    	//add border
+	    	event_location.css('border','1px solid red').focus();
+            return false
+	    	//reset input 
+	    	setTimeout(function resetInput() {
+                event_location.css("border","1px solid #c06400;");
+            }, 3000);
+            return false
+    	}else if( !event_description.val() ){
+	    	//add border
+	    	event_description.css('border','1px solid red').focus();
+	    	//reset input 
+	    	setTimeout(function resetInput() {
+                event_description.css("border","1px solid #c06400;");
+            }, 3000);
+            return false
+    	}
+
+        // serialize and submit search form
+        $.ajax({
+            type: "POST",
+            url: $(this).attr('action'),
+            data: $(this).serialize(), 
+            success: function(data){
+                //refresh screen
+                window.location.reload();
+            },
+            fail: function(data){
+                alert('unknown server error occurred');
+            }
+        });
+
+        //Stop html form submission
+        e.preventDefault(); 
+    });
+
+    //Remove event btn
+    $(".remove-event").click(function(e) {
+    	//show confirmation popup
+    	$("#confirm-removal-popup").show();
+	});
+
+
+    //Remove event confirm
+    $(".remove-event-yes").click(function(e) {
+    	var event_id = $('input[name="event-id"]').val();
+
+    	// serialize and submit search form
+        $.ajax({
+            type: "POST",
+            url: '/event/remove/',
+            data: JSON.stringify({event_id: event_id}), 
+            success: function(data){
+                //refresh screen
+                window.location.reload();
+            },
+            fail: function(data){
+                alert('unknown server error occurred');
+            }
+        });
+
 	});
 
 });

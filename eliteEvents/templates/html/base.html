@@ -2,7 +2,7 @@
 {% load staticfiles %}
 <html lang="en">
   <head>
-    <title>ED Events</title>
+    <title>Elite Dangerous Events</title>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -45,8 +45,16 @@
             {% endblock %}
             <footer class="mastfoot">
             <div class="inner">
-              <p>Created by CMDR Doughboy856</p>
-              <p><a class="footer-link" href="https://github.com/CCecilia/eliteDangerousEvents" target="_blank">view source code</a></p>
+              <p>
+                <a class="footer-link" href="mailto:christian.cecilia1@gmail.com?Subject=Elite%20Dangerous%20Events">Created by CMDR Doughboy856</a>
+              </p>
+              <p>
+                <a class="footer-link" href="https://github.com/CCecilia/eliteDangerousEvents" target="_blank">view source code</a>
+              </p>
+              <p>
+              <p class="footer-disclaimer">
+                This website was created using assets and imagery from Elite Dangerous and <a class="footer-link" href="http://edassets.org/" target="_blank">Elite Dangerous Assests</a> for non-commercial purposes. It is not endorsed by nor reflects the views or opinions of Frontier Developments and no employee of Frontier Developments was involved in the making of it.
+              </p>
             </div>
           </footer>
 
@@ -65,14 +73,15 @@
       <p class="event-popup-end-date"></p>
       <p class="event-popup-end-time"></p>
       <span><i class="fa fa-users" aria-hidden="true"></i></span><span class="attedance"></span>
+      <input name="event-id" type="hidden">
       {% if user.is_authenticated %}
         {% if page == 'myEvents' %}
           <br>
           <br>
-          <button class="join-event" type="submit">Edit</button>
+          <button class="edit-event">Edit</button>
           <br>
           <br>
-          <button class="join-event" type="submit">Remove</button>
+          <button class="remove-event">Remove</button>
         {% else %}
           <form name="join-event" method="POST" action="/event/join/">
             <input type="hidden" name="user-id" value="{{ user.id }}">
@@ -82,6 +91,14 @@
           </form>
         {% endif %}
       {% endif %}
+    </div>
+
+    <div id="confirm-removal-popup">
+      <p class="remove-confirm-msg">
+        Are you sure?
+      </p>
+      <button class="remove-event-yes">Yes</button>
+      <button class="remove-event-no">No</button>
     </div>
     
 
