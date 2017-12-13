@@ -1,4 +1,4 @@
-# Elite Dangerous Events
+# [Elite Dangerous Events](http://elitedangerousevents.us-east-1.elasticbeanstalk.com/)
 
 A site for commanders in the Elite Dangerous galaxy to create and join in player created events. 
 
