@@ -9,9 +9,6 @@ from django.contrib.auth import authenticate, login, logout
 from django.core import serializers
 from .models import Event
 
-# Global
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Pages
 
@@ -131,7 +128,7 @@ def loginUser(request):
     # Auth user
     user = authenticate(request, username=username, password=password)
 
-    if user is not None:
+    if user:
         login(request, user)
         # create response
         response = {
@@ -208,6 +205,7 @@ def eventJoin(request):
     # add user to event
     event.attendees.add(user)
 
+    # get updated attendance count
     attendance = event.attendees.all().count()
 
     # create response
