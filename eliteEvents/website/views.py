@@ -310,3 +310,6 @@ def removeEvent(request):
 
     # send reponse JSON
     return JsonResponse(response)
+
+
+
