@@ -1,15 +1,20 @@
-import lorem
+
+from datetime import timedelta
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from django.utils import timezone
-from datetime import timedelta
+import json
+import lorem
 from .models import Event
 
 
 class EventModelTests(TestCase):
+    c = Client()
 
     @classmethod
     def setUpTestData(cls):
+
+
         # dec vars
         today = timezone.now()
         tomorrow = timezone.now() + timedelta(days=1)
@@ -17,8 +22,6 @@ class EventModelTests(TestCase):
         start_time = today.time()
         end_date = tomorrow.date()
         end_time = start_time
-        current_attendee_count = 0
-        event_count = 0
 
         # create auth user
         User.objects.create(
@@ -28,19 +31,18 @@ class EventModelTests(TestCase):
         )
 
         # create attendees for event
-        while current_attendee_count < 5:
-            username = 'TestUser%s' % current_attendee_count
-            email = 'test%s@user.com' % current_attendee_count
+        for i in range(5):
+            username = 'TestUser%s' % i
+            email = 'test%s@user.com' % i
             User.objects.create(
                 username=username,
                 email=email,
                 password='password'
             )
-            current_attendee_count += 1
 
         # Create Events
-        while event_count < 5:
-            event_name = 'Test Event %s' % event_count
+        for i in range(5):
+            event_name = 'Test Event %s' % i
             Event.objects.create(
                 name=event_name,
                 event_type='Combat',
@@ -53,7 +55,6 @@ class EventModelTests(TestCase):
                 date_created=timezone.now(),
                 description=lorem.paragraph()
             )
-            event_count += 1
 
     def test_event_associated_to_auth_user(self):
         # check if event will return creator
@@ -72,23 +73,6 @@ class EventModelTests(TestCase):
 
         self.assertEqual(event.attendees.all().count(), 5)
 
-    def test_index_view(self):
-        response = self.client.get('')
-        # check reponse and template
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'html/index.html')
-
-    def test_createEvent_view(self):
-        response = self.client.get('/createEvent/')
-        # check reponse and template
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'html/createEvent.html')
-
-    def test_allEvents_view(self):
-        response = self.client.get('/myEvents/')
-        # check redirect for user not signed in
-        self.assertEqual(response.status_code, 302)
-
     def test_myEvents_view(self):
         response = self.client.get('/allEvents/')
         # check reponse and template
@@ -106,10 +90,119 @@ class EventModelTests(TestCase):
         correct_event = Event.objects.get(pk=1)
         self.assertEqual(response.context['event'], correct_event)
 
-    def test_ajax_register(self):
-        c = Client()
-        response = c.post('/login/', {
-            'username': 'john', 
-            'password': 'smith'
-        })
+    def test_search_events(self):
+        # Check event search
+        response = self.c.post(
+            '/event/search/', 
+            json.dumps({'event_search': 'Test Event'}),
+            'json',
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest',
+        )
+        event_search_results = json.loads(response.content)['event_search_results']
+        # Check event objs are returned
+        self.assertEqual(len(event_search_results), 5)
+        # check event objs have values
+        for i in range(len(event_search_results)):
+            self.assertFalse(event_search_results[i]['id'] == '')
+            self.assertFalse(event_search_results[i]['name'] == '')
+            self.assertFalse(event_search_results[i]['event_type'] == '')
+            self.assertEqual(event_search_results[i]['attendees'], None)
+
+    def test_event_details(self):
+        # Check event search
+        response = self.c.post(
+            '/event/details/', 
+            json.dumps({'event_id': 1}),
+            'json',
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest',
+        )
+        event = json.loads(response.content)['event']
+
+        # Check event obj is returned
+        self.assertTrue(event)
+
+
+class RenderViewsTests(TestCase):
+
+    def test_index_view(self):
+        response = self.client.get('')
+        # check reponse and template
         self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'html/index.html')
+
+    def test_createEvent_view(self):
+        response = self.client.get('/createEvent/')
+        # check reponse and template
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'html/createEvent.html')
+
+    def test_allEvents_view(self):
+        response = self.client.get('/myEvents/')
+        # check redirect for user not signed in
+        self.assertEqual(response.status_code, 302)
+
+    def test_signin_view(self):
+        response = self.client.get('/signin/')
+        # check redirect for user not signed in
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'html/signin.html')
+
+
+class AjaxViewsTests(TestCase):
+    c = Client()
+
+    @classmethod
+    def setUpTestData(cls):
+        User.objects.create(
+            username='testuser',
+            email='testuser@email.com',
+            password='password'
+        )
+
+    def test_ajax_register_success(self):
+        # Check register success
+        response = self.c.post('/register/', {
+            'register-username': 'testuser1',
+            'register-email': 'testuser1@email.com',
+            'register-password': 'password'
+        })
+        self.assertEqual(json.loads(response.content)['status'], 'success')
+        self.assertEqual(response.status_code, 200)
+
+    def test_ajax_register_username_in_use(self):
+        # Check register failed  username taken
+        response = self.c.post('/register/', {
+            'register-username': 'testuser',
+            'register-email': 'testuser@email.com',
+            'register-password': 'password'
+        })
+        self.assertEqual(json.loads(response.content)['status'], 'fail')
+        self.assertEqual(json.loads(response.content)['error_msg'], 'username already in use')
+
+    def test_ajax_register_email_in_use(self):
+        # Check register failed email in use
+        response = self.c.post('/register/', {
+            'register-username': 'testuser1',
+            'register-email': 'testuser@email.com',
+            'register-password': 'password'
+        })
+        self.assertEqual(json.loads(response.content)['status'], 'fail')
+        self.assertEqual(json.loads(response.content)['error_msg'], 'email already in use')
+
+    def test_ajax_register_password_length(self):
+        # Check register failed  password length
+        response = self.c.post('/register/', {
+            'register-username': 'testuser2',
+            'register-email': 'testuser2@email.com',
+            'register-password': 'pass'
+        })
+        self.assertEqual(json.loads(response.content)['status'], 'fail')
+        self.assertEqual(json.loads(response.content)['error_msg'], 'password must be atleast 8 characters long')
+
+    def test_ajax_login_fail(self):
+        # Check login fail
+        response = self.c.post('/login/', {
+            'signin-username': 'testuser5000',
+            'signin-password': 'password'
+        })
+        self.assertEqual(json.loads(response.content)['status'], 'fail')
