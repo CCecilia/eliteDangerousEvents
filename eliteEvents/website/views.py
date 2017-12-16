@@ -1,12 +1,14 @@
 __author__ = 'christian.cecilia1@gmail.com'
 
-import os
+import ijson
 import json
-from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse
+import os
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.core import serializers
+from django.http import JsonResponse
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
 from .models import Event
 
 
@@ -312,4 +314,27 @@ def removeEvent(request):
     return JsonResponse(response)
 
 
+def searchSystems(request):
+    system_query = json.loads(request.body)['system_query']
+    results = []
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+    with open(BASE_DIR + '/website/media/uploads/populated_systems.json', "rb") as f:
+        # parse JSON file
+        parser = ijson.parse(f)
+        for prefix, event, value in parser:
+            if prefix == 'item.name':
+                if system_query in str(value).lower() and len(results) < 5:
+                    print('value:{}'.format(value))
+                    results.append(value)
+
+
+    # create response
+    response = {
+        'status': 'success',
+        'results': results
+    }
+
+    # send reponse JSON
+    return JsonResponse(response)
 

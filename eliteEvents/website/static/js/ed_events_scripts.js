@@ -156,12 +156,43 @@ $(document).ready(function(){
     });
 
 
-    //Event location autofill 
-    $(".event-location").keyup(function(e) {
-    	var query = $(this).val();
+    //Event location search
+    $(".location-search-icon").click(function(e) {
+        // get system query
+    	var system_query = $("input[name='event-location']").val();
+        
+    	if(system_query.length > 2){
+            // clear out table
+    		$("#location-results-table").empty();
 
-    	if(query.length > 2){
-    		console.log('long enough for search');
+            // add loading animation 
+            $(this).addClass('fa-pulse');
+
+            $.ajax({
+                type: "POST",
+                url: '/search/systems/',
+                data: JSON.stringify({system_query: system_query}), 
+                success: function(data){
+                    console.log(data);
+                    // stop loading animation
+                    $(".location-search-icon").removeClass('fa-pulse');
+                    for ( i = 0; i < data.results.length; i++ ) { 
+                        // create rows for slection table of top 5 results
+                        result_html = '' +
+                        '<tr>' +
+                            '<td>'+data.results[i]+'</td' +
+                        '</tr>';
+                        $(result_html).appendTo($('#location-results-table'));
+                    }
+
+                },
+                fail: function(data){
+                    // stop loading animation
+                    $(".location-search-icon").removeClass('fa-pulse');
+                    // alert user of error
+                    alert('unknown server error occurred');
+                }
+            });
     	}
     });
 
