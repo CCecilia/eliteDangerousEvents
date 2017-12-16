@@ -38,7 +38,10 @@
 	            </ul>
 	            <input type="hidden" name="event-type"/>
 	            <h2 class="event-label cover-heading">Event Location</h2>
-	            <input class="event-location" name="event-location" placeholder="Event Location" type="text">
+	            <input class="event-location" name="event-location" placeholder="Event Location" type="text"><span><i class="fa fa-search location-search-icon"></i></span>
+	            <div class="location-results-wrapper">
+	            	<table id="location-results-table"></table>
+	            </div>
 	            <h2 class="event-label cover-heading">Description</h2>
 	            <textarea class="event-description" name="event-description" cols="75" rows="5"></textarea>
 	            {% csrf_token %}

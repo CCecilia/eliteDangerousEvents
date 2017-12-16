@@ -6,7 +6,6 @@ function isValidEmailAddress(emailAddress) {
     return pattern.test(emailAddress);
 };
 
-
 $(document).ready(function(){
 	//add csrf token to headers
     $.ajaxSetup({
@@ -156,13 +155,58 @@ $(document).ready(function(){
     });
 
 
-    //Event location autofill 
-    $(".event-location").keyup(function(e) {
-    	var query = $(this).val();
+    //Event location search
+    $(".location-search-icon").click(function(e) {
+        // get system query
+    	var system_query = $("input[name='event-location']").val();
+        
+    	if(system_query.length > 2){
+            // clear out table
+    		$("#location-results-table").empty();
 
-    	if(query.length > 2){
-    		console.log('long enough for search');
+            // add loading animation 
+            $(this).addClass('fa-pulse');
+
+            $.ajax({
+                type: "POST",
+                url: '/search/systems/',
+                data: JSON.stringify({system_query: system_query}), 
+                success: function(data){
+                    console.log(data);
+                    // stop loading animation
+                    $(".location-search-icon").removeClass('fa-pulse');
+                    for ( i = 0; i < data.results.length; i++ ) { 
+                        // create rows for slection table of top 5 results
+                        result_html = '' +
+                        '<tr class="location-result">' +
+                            '<td>'+data.results[i].name+'</td' +
+                        '</tr>';
+                        $('#location-results-table').append($(result_html));
+                    }
+
+                },
+                fail: function(data){
+                    // stop loading animation
+                    $(".location-search-icon").removeClass('fa-pulse');
+                    // alert user of error
+                    alert('unknown server error occurred');
+                }
+            });
     	}
+    });
+
+
+    //add location result to location
+    $('#location-results-table').on('click', '.location-result', function() {
+        console.log('test');
+        //dec event id
+        var result = $(this).text();
+
+        // empty location table
+        $("#location-results-table").empty();
+
+        //fill location with result
+        $("input[name='event-location']").val(result);
     });
 
 
@@ -223,7 +267,7 @@ $(document).ready(function(){
     	//get search query
     	var event_search = $(this).val();
 
-		if( event_search.length > 1){
+		if(event_search.length > 1){
 			//serialize and submit search form
 	        $.ajax({
 	            type: "POST",

@@ -1,3 +1,4 @@
 Django==2.0
+ijson==2.3
 lorem==0.1.1
 pytz==2017.3

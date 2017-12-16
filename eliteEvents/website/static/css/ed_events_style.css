@@ -229,6 +229,41 @@ body {
    margin-top: 5%;
 }
 
+.location-search-icon{
+  padding: .5em;
+  border: 1px solid #c06400;
+  cursor: pointer;
+}
+
+.location-search-icon:hover, #location-results-table tr:hover{
+  color: #FFF;
+  background-color: #c06400;
+}
+
+.event-location{
+  margin-bottom: 0;
+}
+
+.location-results-wrapper{
+  width: 20em;
+  margin: 0 auto;
+}
+
+#location-results-table{
+  width: 20em;
+
+}
+
+#location-results-table tr{
+  border: 1px solid #c06400;
+  cursor: pointer;
+}
+
+{
+  border: 1px solid #c06400;
+  background-color: 
+}
+
 .event-description{
   background-color: #333;;
   color: #c06400;
