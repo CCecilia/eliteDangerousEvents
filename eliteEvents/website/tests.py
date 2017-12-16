@@ -178,7 +178,7 @@ class AjaxViewsTests(TestCase):
         })
         self.assertEqual(json.loads(response.content)['status'], 'fail')
         self.assertEqual(json.loads(response.content)['error_msg'], 'username already in use')
-
+      
     def test_ajax_register_email_in_use(self):
         # Check register failed email in use
         response = self.c.post('/register/', {
