@@ -28,7 +28,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
-    '10.0.0.63',
     'elitedangerousevents.us-east-1.elasticbeanstalk.com'
 ]
 
