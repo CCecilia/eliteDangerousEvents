@@ -1,5 +1,5 @@
 import lorem
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from django.utils import timezone
 from datetime import timedelta
@@ -105,3 +105,11 @@ class EventModelTests(TestCase):
         # check correct event is returned
         correct_event = Event.objects.get(pk=1)
         self.assertEqual(response.context['event'], correct_event)
+
+    def test_ajax_register(self):
+        c = Client()
+        response = c.post('/login/', {
+            'username': 'john', 
+            'password': 'smith'
+        })
+        self.assertEqual(response.status_code, 200)
