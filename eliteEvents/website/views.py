@@ -9,7 +9,7 @@ from django.core import serializers
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
-from .models import Event
+from .models import Event, SolarSystem
 
 
 # Pages
@@ -316,17 +316,11 @@ def removeEvent(request):
 
 def searchSystems(request):
     system_query = json.loads(request.body)['system_query']
-    results = []
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    results = list(SolarSystem.objects.filter(name__icontains=system_query).values('name')[:5])
+    # if system_query in str(value).lower() and len(results) < 5:
+    #     print('value:{}'.format(value))
+    #     results.append(value)
 
-    with open(BASE_DIR + '/website/media/uploads/populated_systems.json', "rb") as f:
-        # parse JSON file
-        parser = ijson.parse(f)
-        for prefix, event, value in parser:
-            if prefix == 'item.name':
-                if system_query in str(value).lower() and len(results) < 5:
-                    print('value:{}'.format(value))
-                    results.append(value)
 
 
     # create response
@@ -338,3 +332,16 @@ def searchSystems(request):
     # send reponse JSON
     return JsonResponse(response)
 
+
+def parsePopulatedSystems():
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+    with open(BASE_DIR + '/website/media/uploads/populated_systems.json', "rb") as f:
+        # parse JSON file
+        parser = ijson.parse(f)
+        for prefix, event, value in parser:
+            if prefix == 'item.name':
+                SolarSystem.objects.create(name=str(value))
+                print('added value:{} to DB'.format(value))
+
+    return

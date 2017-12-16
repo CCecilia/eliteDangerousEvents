@@ -6,7 +6,6 @@ function isValidEmailAddress(emailAddress) {
     return pattern.test(emailAddress);
 };
 
-
 $(document).ready(function(){
 	//add csrf token to headers
     $.ajaxSetup({
@@ -179,10 +178,10 @@ $(document).ready(function(){
                     for ( i = 0; i < data.results.length; i++ ) { 
                         // create rows for slection table of top 5 results
                         result_html = '' +
-                        '<tr>' +
-                            '<td>'+data.results[i]+'</td' +
+                        '<tr class="location-result">' +
+                            '<td>'+data.results[i].name+'</td' +
                         '</tr>';
-                        $(result_html).appendTo($('#location-results-table'));
+                        $('#location-results-table').append($(result_html));
                     }
 
                 },
@@ -194,6 +193,20 @@ $(document).ready(function(){
                 }
             });
     	}
+    });
+
+
+    //add location result to location
+    $('#location-results-table').on('click', '.location-result', function() {
+        console.log('test');
+        //dec event id
+        var result = $(this).text();
+
+        // empty location table
+        $("#location-results-table").empty();
+
+        //fill location with result
+        $("input[name='event-location']").val(result);
     });
 
 
@@ -254,7 +267,7 @@ $(document).ready(function(){
     	//get search query
     	var event_search = $(this).val();
 
-		if( event_search.length > 1){
+		if(event_search.length > 1){
 			//serialize and submit search form
 	        $.ajax({
 	            type: "POST",

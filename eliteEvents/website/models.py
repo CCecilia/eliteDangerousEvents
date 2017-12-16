@@ -17,3 +17,9 @@ class Event(models.Model):
 
     def __str__(self):
         return self.name
+
+class SolarSystem(models.Model):
+    name = models.CharField(db_index=True, max_length=200)
+
+    def __str__(self):
+        return self.name
