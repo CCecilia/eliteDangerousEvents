@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 import json
 import lorem
-from .models import Event
+from .models import Event, SolarSystem
 
 
 class EventModelTests(TestCase):
@@ -155,6 +155,22 @@ class EventModelTests(TestCase):
         
     #     self.assertTrue()
 
+    def test_update_event(self):
+        today = timezone.now()
+        # Check event create
+        response = self.c.post('/event/edit/2/', {
+            'event-title': 'edited',
+            'event-type': 'exploration',
+            'event-location': 'edited',
+            'event-description': 'edited',
+            'event-start-date': today.date(),
+            'event-end-date': today.date(),
+            'event-end-time': today.time(),
+            'event-start-time': today.time()
+        })
+       
+        self.assertEqual(response.status_code, 200)
+
 
 class RenderViewsTests(TestCase):
 
@@ -192,6 +208,10 @@ class AjaxViewsTests(TestCase):
             email='testuser@email.com',
             password='password'
         )
+
+        for i in range(5):
+            SolarSystem.objects.create(name="LTT 944{}".format(i) )
+
 
     def test_ajax_register_success(self):
         # Check register success
@@ -240,3 +260,17 @@ class AjaxViewsTests(TestCase):
             'signin-password': 'password'
         })
         self.assertEqual(json.loads(response.content)['status'], 'fail')
+
+    def test_search_systems(self):
+        # Check systems search
+        response = self.c.post(
+            '/search/systems/', 
+            json.dumps({'system_query': 'LTT'}),
+            'json',
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest',
+        )
+
+        results = json.loads(response.content)['results']
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(results), 5)
