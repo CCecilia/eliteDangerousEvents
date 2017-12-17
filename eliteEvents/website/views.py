@@ -317,11 +317,6 @@ def removeEvent(request):
 def searchSystems(request):
     system_query = json.loads(request.body)['system_query']
     results = list(SolarSystem.objects.filter(name__icontains=system_query).values('name')[:5])
-    # if system_query in str(value).lower() and len(results) < 5:
-    #     print('value:{}'.format(value))
-    #     results.append(value)
-
-
 
     # create response
     response = {
@@ -333,7 +328,7 @@ def searchSystems(request):
     return JsonResponse(response)
 
 
-def parsePopulatedSystems():
+def parsePopulatedSystems(request):
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
     with open(BASE_DIR + '/website/media/uploads/populated_systems.json', "rb") as f:

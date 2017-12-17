@@ -81,7 +81,7 @@ class EventModelTests(TestCase):
         self.assertTrue(len(response.context['events']) == 5)
         self.assertTemplateUsed(response, 'html/allEvents.html')
 
-    def test_editEvent_view_(self):
+    def test_editEvent_view(self):
         response = self.client.get('/event/edit/1/')
         # check reponse and template
         self.assertEqual(response.status_code, 200)
@@ -109,7 +109,7 @@ class EventModelTests(TestCase):
             self.assertEqual(event_search_results[i]['attendees'], None)
 
     def test_event_details(self):
-        # Check event search
+        # Check event deatils
         response = self.c.post(
             '/event/details/', 
             json.dumps({'event_id': 1}),
@@ -120,6 +120,40 @@ class EventModelTests(TestCase):
 
         # Check event obj is returned
         self.assertTrue(event)
+
+    def test_join_event(self):
+        event = Event.objects.get(pk=1)
+        old_attendance = event.attendees.all().count()
+
+        # Check event search
+        response = self.c.post('/event/join/', {
+            'event-id': 1,
+            'user-id': 1,
+        })
+        new_attendance = json.loads(response.content)['attendance']
+
+        # Check attendance is updated
+        self.assertEqual(new_attendance, old_attendance + 1)
+
+    # def test_create_event(self):
+    #     today = timezone.now()
+    #     response = self.c.post('/login/', {
+    #         'signin-username': 'TestUser',
+    #         'signin-password': 'password',
+    #     })
+    #     # Check event create
+    #     response = self.c.post('/event/create/', {
+    #         'event-title': 'test create event',
+    #         'event-type': 'combat',
+    #         'event-location': 'ltt 9455',
+    #         'event-description': lorem.paragraph,
+    #         'event-start-date': today.date(),
+    #         'event-end-date': today.date(),
+    #         'event-end-time': today.time(),
+    #         'event-start-time': today.time()
+    #     })
+        
+    #     self.assertTrue()
 
 
 class RenderViewsTests(TestCase):
