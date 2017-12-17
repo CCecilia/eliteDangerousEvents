@@ -84,6 +84,9 @@ class EventModelTests(TestCase):
 
     def test_editEvent_view(self):
         response = self.client.get('/event/edit/1/')
+        user = User.objects.get(pk=1)
+        self.c.force_login(user)
+        
         # check reponse and template
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'html/editEvent.html')
@@ -124,7 +127,11 @@ class EventModelTests(TestCase):
 
     def test_join_event(self):
         event = Event.objects.get(pk=1)
+        user = User.objects.get(pk=1)
         old_attendance = event.attendees.all().count()
+        
+        # login user
+        self.c.force_login(user)
 
         # Check event search
         response = self.c.post('/event/join/', {
@@ -163,6 +170,11 @@ class EventModelTests(TestCase):
 
     def test_update_event(self):
         today = timezone.now()
+        user = User.objects.get(pk=1)
+
+        # login user
+        self.c.force_login(user)
+
         # Check event create
         response = self.c.post('/event/edit/2/', {
             'event-title': 'edited',
@@ -179,6 +191,16 @@ class EventModelTests(TestCase):
 
 
 class RenderViewsTests(TestCase):
+    c = Client()
+
+    @classmethod
+    def setUpTestData(self):
+        # create auth user
+        User.objects.create(
+            username='TestUser',
+            email='test@user.com',
+            password='password'
+        )
 
     def test_index_view(self):
         response = self.client.get('')
@@ -188,6 +210,8 @@ class RenderViewsTests(TestCase):
 
     def test_createEvent_view(self):
         response = self.client.get('/createEvent/')
+        user = User.objects.get(pk=1)
+        self.c.force_login(user)
         # check reponse and template
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'html/createEvent.html')
