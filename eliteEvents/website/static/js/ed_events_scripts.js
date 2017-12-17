@@ -14,6 +14,57 @@ $(document).ready(function(){
         }
     });
 
+    function dispalyEventDetails(event_id){
+        //get event details and display popup
+        $.ajax({
+            type: "POST",
+            url: "/event/details/",
+            data: JSON.stringify({event_id: event_id}), 
+            success: function(data){
+                var event = JSON.parse(data.event);
+                // clear out popup text
+                $(
+                    '.event-popup-name,'+
+                    '.event-popup-description,'+
+                    '.event-popup-start-date,'+
+                    '.event-popup-location'
+                ).empty();
+                
+                //fill in with event info
+                if(event[0].fields.event_type == 'combat'){
+                    $(".event-popup-type").attr({
+                        'src': 'http://edassets.org/img/pilots-federation/combat/rank-9-combat.png',
+                        'alt': event[0].fields.event_type
+                    })
+                }else if(event[0].fields.event_type == 'exploration'){
+                    $(".event-popup-type").attr({
+                        'src': 'http://edassets.org/img/pilots-federation/explorer/rank-9.png',
+                        'alt': event[0].fields.event_type
+                    })
+                }else{
+                    $(".event-popup-type").attr({
+                        'src': 'http://edassets.org/img/pilots-federation/trading/rank-9-trading.png',
+                        'alt': event[0].fields.event_type
+                    })
+                }
+                console.log();
+                $('.event-popup-name').text(event[0].fields.name);
+                $('.event-popup-description').text(event[0].fields.description);
+                $('.event-popup-start-date').text('Start Date:'+ event[0].fields.start_date);
+                $('.event-popup-start-time').text('Start Time:'+ event[0].fields.start_time);
+                $('.event-popup-end-date').text('End Date:' + event[0].fields.end_date);
+                $('.event-popup-end-time').text('End Time:' + event[0].fields.end_time);
+                $('.event-popup-location').text('Location:' + event[0].fields.location);
+                $('.attedance').text(event[0].fields.attendees.length);
+                $('input[name="event-id"]').val(event[0].pk);
+                $('#event-details-popup').fadeIn(300);
+            },
+            fail: function(data){
+                alert('unknown error occurred');
+            }
+        });
+    };
+
 
     //signin/register indentifiers
     $("signin, register").click(function(e) {
@@ -249,8 +300,16 @@ $(document).ready(function(){
             url: "/event/create/",
             data: $(this).serialize(), 
             success: function(data){
-                //refresh screen
-                window.location.reload();
+                //clear out create form
+                for ( i = 0; i < form_inputs.length; i++ ) { 
+                    form_inputs[i].val('');
+                }
+                event_type.val('');
+                //uncheck event type
+                $(".event-type-img").removeClass('event-type-selected');
+                //display detail popup
+                
+                dispalyEventDetails(data.event_id);
             },
             fail: function(data){
                 alert('unknown server error occurred');
@@ -315,54 +374,7 @@ $(document).ready(function(){
 		//dec event id
 	    var event_id = $(this).attr('data-id');
 
-        //get event details and display popup
-        $.ajax({
-            type: "POST",
-            url: "/event/details/",
-            data: JSON.stringify({event_id: event_id}), 
-            success: function(data){
-            	var event = JSON.parse(data.event);
-            	// clear out popup text
-            	$(
-            		'.event-popup-name,'+
-            		'.event-popup-description,'+
-            		'.event-popup-start-date,'+
-            		'.event-popup-location'
-        		).empty();
-            	
-            	//fill in with event info
-            	if(event[0].fields.event_type == 'combat'){
-            		$(".event-popup-type").attr({
-            			'src': 'http://edassets.org/img/pilots-federation/combat/rank-9-combat.png',
-            			'alt': event[0].fields.event_type
-            		})
-            	}else if(event[0].fields.event_type == 'exploration'){
-            		$(".event-popup-type").attr({
-            			'src': 'http://edassets.org/img/pilots-federation/explorer/rank-9.png',
-            			'alt': event[0].fields.event_type
-            		})
-            	}else{
-            		$(".event-popup-type").attr({
-            			'src': 'http://edassets.org/img/pilots-federation/trading/rank-9-trading.png',
-            			'alt': event[0].fields.event_type
-            		})
-            	}
-            	console.log();
-            	$('.event-popup-name').text(event[0].fields.name);
-            	$('.event-popup-description').text(event[0].fields.description);
-            	$('.event-popup-start-date').text('Start Date:'+ event[0].fields.start_date);
-            	$('.event-popup-start-time').text('Start Time:'+ event[0].fields.start_time);
-            	$('.event-popup-end-date').text('End Date:' + event[0].fields.end_date);
-            	$('.event-popup-end-time').text('End Time:' + event[0].fields.end_time);
-            	$('.event-popup-location').text('Location:' + event[0].fields.location);
-            	$('.attedance').text(event[0].fields.attendees.length);
-            	$('input[name="event-id"]').val(event[0].pk);
-            	$('#event-details-popup').fadeIn(300);
-            },
-            fail: function(data){
-                alert('unknown error occurred');
-            }
-        });
+        dispalyEventDetails(event_id);
 	});
 
 

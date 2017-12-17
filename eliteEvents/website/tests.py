@@ -12,7 +12,7 @@ class EventModelTests(TestCase):
     c = Client()
 
     @classmethod
-    def setUpTestData(cls):
+    def setUpTestData(self):
 
 
         # dec vars
@@ -22,6 +22,7 @@ class EventModelTests(TestCase):
         start_time = today.time()
         end_date = tomorrow.date()
         end_time = start_time
+
 
         # create auth user
         User.objects.create(
@@ -135,25 +136,30 @@ class EventModelTests(TestCase):
         # Check attendance is updated
         self.assertEqual(new_attendance, old_attendance + 1)
 
-    # def test_create_event(self):
-    #     today = timezone.now()
-    #     response = self.c.post('/login/', {
-    #         'signin-username': 'TestUser',
-    #         'signin-password': 'password',
-    #     })
-    #     # Check event create
-    #     response = self.c.post('/event/create/', {
-    #         'event-title': 'test create event',
-    #         'event-type': 'combat',
-    #         'event-location': 'ltt 9455',
-    #         'event-description': lorem.paragraph,
-    #         'event-start-date': today.date(),
-    #         'event-end-date': today.date(),
-    #         'event-end-time': today.time(),
-    #         'event-start-time': today.time()
-    #     })
+    def test_create_event(self):
+        today = timezone.now()
+        init_event_count = Event.objects.all().count()
+        user = User.objects.get(pk=1)
         
-    #     self.assertTrue()
+        # login user
+        self.c.force_login(user)
+
+        # Check event create
+        response = self.c.post('/event/create/', {
+            'event-title': 'test create event',
+            'event-type': 'combat',
+            'event-location': 'ltt 9455',
+            'event-description': lorem.paragraph,
+            'event-start-date': today.date(),
+            'event-end-date': today.date(),
+            'event-end-time': today.time(),
+            'event-start-time': today.time()
+        })
+
+        new_event_count = Event.objects.all().count()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(new_event_count, init_event_count + 1)
 
     def test_update_event(self):
         today = timezone.now()

@@ -5,6 +5,7 @@ import json
 import os
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -29,7 +30,7 @@ def signin(request):
     }
     return render(request, 'html/signin.html', context)
 
-
+@login_required
 def createEventPage(request):
     context = {
         'page': 'createEvent',
@@ -49,7 +50,7 @@ def allEvents(request):
     }
     return render(request, 'html/allEvents.html', context)
 
-
+@login_required
 def myEvents(request):
     # Dec  Vars
     user = request.user
@@ -67,7 +68,7 @@ def myEvents(request):
     }
     return render(request, 'html/myEvents.html', context)
 
-
+@login_required
 def editEvent(request, event_id):
     # Dec  Vars
     event = get_object_or_404(Event, pk=event_id)
@@ -196,12 +197,12 @@ def eventDetails(request):
     # send reponse JSON
     return JsonResponse(response)
 
-
+@login_required
 def eventJoin(request):
     # get event
     user_id = int(request.POST['user-id'])
     event_id = int(request.POST['event-id'])
-    user = User.objects.get(pk=user_id)
+    user = request.user
     event = Event.objects.get(pk=event_id)
 
     # add user to event
@@ -219,7 +220,7 @@ def eventJoin(request):
     # send reponse JSON
     return JsonResponse(response)
 
-
+@login_required
 def createEvent(request):
     # dec vars
     event_title = str(request.POST['event-title']).title()
@@ -233,7 +234,7 @@ def createEvent(request):
     creator = request.user
 
     # create event
-    Event.objects.create(
+    new_event = Event.objects.create(
         name=event_title,
         event_type=event_type,
         creator=creator,
@@ -248,12 +249,14 @@ def createEvent(request):
     # #create response
     response = {
         'status': 'success',
+        'event_id': new_event.id
+
     }
 
     # send reponse JSON
     return JsonResponse(response)
 
-
+@login_required
 def updateEvent(request, event_id):
     # dec vars
     event_title = str(request.POST['event-title']).title()

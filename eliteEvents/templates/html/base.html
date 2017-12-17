@@ -88,7 +88,6 @@
           <button class="remove-event">Remove</button>
         {% else %}
           <form name="join-event" method="POST" action="/event/join/">
-            <input type="hidden" name="user-id" value="{{ user.id }}">
             <input type="hidden" name="event-id">
             <br>
             <button class="join-event" type="submit">Join</button>

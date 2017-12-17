@@ -300,7 +300,7 @@ body {
   border: 2px solid  #c06400;
   border-radius: 30%;
   background: #333;
-  position: absolute; 
+  position: fixed; 
   top: 10%;
   left: 25%;
   display: none;
