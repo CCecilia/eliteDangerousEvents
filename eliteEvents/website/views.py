@@ -9,7 +9,6 @@ from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.decorators.csrf import csrf_exempt
 from .models import Event, SolarSystem
 
 
