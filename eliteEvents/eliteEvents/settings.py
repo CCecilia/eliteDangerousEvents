@@ -9,11 +9,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # gen random secret key
 random_key = ''.join([random.SystemRandom().choice("{}{}{}".format(string.ascii_letters, string.digits, string.punctuation)) for i in range(50)])
 
-
-SECRET_KEY = random_key
-
-
 DEBUG = True
+
+if DEBUG == False:
+    SECRET_KEY = random_key
+else:
+    SECRET_KEY = 'f-_k-o5+&x34=b)xh@w-fuk7=k4gz7l1&s2i&3mp*oj#^i=z80'
+
+
 
 
 ALLOWED_HOSTS = [
@@ -102,3 +105,5 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'website/static/')
+
+LOGIN_URL = '/signin/'

@@ -76,21 +76,27 @@
       <p class="event-popup-start-time"></p>
       <p class="event-popup-end-date"></p>
       <p class="event-popup-end-time"></p>
-      <span><i class="fa fa-users" aria-hidden="true"></i></span><span class="attedance"></span>
+      <span><i class="fa fa-users" aria-hidden="true"></i></span><span class="attendance"></span>
       <input name="event-id" type="hidden">
       {% if user.is_authenticated %}
         {% if page == 'myEvents' %}
           <br>
           <br>
-          <button class="edit-event">Edit</button>
+          <button class="edit-event event-option">Edit</button>
           <br>
           <br>
-          <button class="remove-event">Remove</button>
+          <button class="remove-event event-option">Remove</button>
+          <br>
+          <br>
+          <button class="share-event event-option">Share</button>
+
+          <button class="reddit-share event-share-option"><i class="fa fa-reddit-alien" aria-hidden="true"></i></button>
+          <button class="share-cancel event-share-option"><i class="fa fa-times" aria-hidden="true"></i></button>
         {% else %}
           <form name="join-event" method="POST" action="/event/join/">
             <input type="hidden" name="event-id">
             <br>
-            <button class="join-event" type="submit">Join</button>
+            <button class="join-event event-option" type="submit">Join</button>
           </form>
         {% endif %}
       {% endif %}

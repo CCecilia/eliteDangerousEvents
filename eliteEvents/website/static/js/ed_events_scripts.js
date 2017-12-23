@@ -55,7 +55,7 @@ $(document).ready(function(){
                 $('.event-popup-end-date').text('End Date:' + event[0].fields.end_date);
                 $('.event-popup-end-time').text('End Time:' + event[0].fields.end_time);
                 $('.event-popup-location').text('Location:' + event[0].fields.location);
-                $('.attedance').text(event[0].fields.attendees.length);
+                $('.attendance').text(event[0].fields.attendees.length);
                 $('input[name="event-id"]').val(event[0].pk);
                 $('#event-details-popup').fadeIn(300);
             },
@@ -485,6 +485,7 @@ $(document).ready(function(){
         e.preventDefault(); 
     });
 
+
     //Remove event btn
     $(".remove-event").click(function(e) {
     	//show confirmation popup
@@ -494,9 +495,9 @@ $(document).ready(function(){
 
     //Remove event confirm
     $(".remove-event-yes").click(function(e) {
-    	var event_id = $('input[name="event-id"]').val();
+        var event_id = $('input[name="event-id"]').val();
 
-    	// serialize and submit search form
+        // serialize and submit search form
         $.ajax({
             type: "POST",
             url: '/event/remove/',
@@ -509,7 +510,34 @@ $(document).ready(function(){
                 alert('unknown server error occurred');
             }
         });
+    });
 
-	});
+
+    //Event Share
+    $(".share-event, .share-cancel").click(function(e) {
+        //toggle event options shown
+        $(".event-option").toggle();
+        $(".event-share-option").toggle();
+    });
+
+
+    //Reddit Share
+    $(".reddit-share").click(function(e) {
+        var event_id = $('input[name="event-id"]').val();
+
+        // serialize and submit search form
+        $.ajax({
+            type: "POST",
+            url: '/event/share/reddit/',
+            data: JSON.stringify({event_id: event_id}), 
+            success: function(data){
+                //refresh screen
+                console.log('reddit chare success');
+            },
+            fail: function(data){
+                alert('unknown server error occurred');
+            }
+        });
+    });
 
 });

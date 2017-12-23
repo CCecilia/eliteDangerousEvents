@@ -14,7 +14,6 @@ class EventModelTests(TestCase):
     @classmethod
     def setUpTestData(self):
 
-
         # dec vars
         today = timezone.now()
         tomorrow = timezone.now() + timedelta(days=1)
@@ -22,7 +21,6 @@ class EventModelTests(TestCase):
         start_time = today.time()
         end_date = tomorrow.date()
         end_time = start_time
-
 
         # create auth user
         User.objects.create(
@@ -84,12 +82,13 @@ class EventModelTests(TestCase):
 
     def test_editEvent_view(self):
         response = self.client.get('/event/edit/1/')
-        user = User.objects.get(pk=1)
-        self.c.force_login(user)
+        # user = User.objects.get(pk=1)
+        # self.c.force_login(user)
         
         # check reponse and template
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'html/editEvent.html')
+
         # check correct event is returned
         correct_event = Event.objects.get(pk=1)
         self.assertEqual(response.context['event'], correct_event)
@@ -208,13 +207,18 @@ class RenderViewsTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'html/index.html')
 
-    def test_createEvent_view(self):
+    def test_createEvent_view_(self):
         response = self.client.get('/createEvent/')
         user = User.objects.get(pk=1)
         self.c.force_login(user)
         # check reponse and template
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'html/createEvent.html')
+
+    def test_createEvent_view_redirect(self):
+        response = self.client.get('/createEvent/')
+        # check reponse and template
+        self.assertEqual(response.status_code, 302)
 
     def test_allEvents_view(self):
         response = self.client.get('/myEvents/')

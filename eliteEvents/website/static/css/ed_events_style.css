@@ -128,14 +128,14 @@ body {
   border-color:  #c06400;
 }
 .event-search-btn, .signin-btn, .register-btn, .event-create-btn,
-.join-event, .edit-event, .remove-event, .remove-event-yes,
+.event-option, .remove-event-yes, .event-share-option,
 .remove-event-no{
   background-color:  transparent;
   color: #c06400;
   border-color:  #c06400;
 }
 .event-search-btn:hover, .signin-btn:hover, .register-btn:hover,
-.event-create-btn:hover, .edit-event:hover, .remove-event:hover,
+.event-create-btn:hover, .event-option:hover, .event-share-option:hover,
  .remove-event-yes:hover, .remove-event-no:hover{
   color: #FFF;
   border-color:  #c06400;
@@ -316,6 +316,10 @@ body {
   position: absolute; 
   top: 20%;
   left: 40%;
+  display: none;
+}
+
+.event-share-option{
   display: none;
 }
 /*
