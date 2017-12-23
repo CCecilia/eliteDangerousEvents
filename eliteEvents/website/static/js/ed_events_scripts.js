@@ -518,7 +518,12 @@ $(document).ready(function(){
         //toggle event options shown
         $(".event-option").toggle();
         $(".event-share-option").toggle();
+        x = {
+            'test_key': 'value1'
+        }
+        
     });
+
 
 
 });
