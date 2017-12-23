@@ -9,7 +9,6 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 import ijson
 import json
-import praw
 import os
 from .models import Event, SolarSystem
 

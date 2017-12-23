@@ -521,23 +521,4 @@ $(document).ready(function(){
     });
 
 
-    //Reddit Share
-    $(".reddit-share").click(function(e) {
-        var event_id = $('input[name="event-id"]').val();
-
-        // serialize and submit search form
-        $.ajax({
-            type: "POST",
-            url: '/event/share/reddit/',
-            data: JSON.stringify({event_id: event_id}), 
-            success: function(data){
-                //refresh screen
-                console.log('reddit chare success');
-            },
-            fail: function(data){
-                alert('unknown server error occurred');
-            }
-        });
-    });
-
 });
