@@ -16,9 +16,13 @@ from .models import Event, SolarSystem
 
 class HtmlRendering:
     def index(request):
+        all_events = Event.objects.all().order_by('-attendees')
+        featuredEvents = all_events[:8]
+
         context = {
             'page': 'index',
-            'coverHeading': 'Search Events'
+            'coverHeading': 'Search Events',
+            'featuredEvents': featuredEvents
         }
         return render(request, 'html/index.html', context)
 
@@ -39,6 +43,13 @@ class HtmlRendering:
     def allEvents(request):
         # Get Events
         events = Event.objects.all()
+
+        try:
+            # filter out users own events if logged
+            events = events.exclude(creator=request.user)
+        except TypeError:
+            pass
+
         page = request.GET.get('page')
         paginator = Paginator(events, 20)
 
@@ -272,7 +283,6 @@ class EventViews:
     @login_required
     def eventJoin(request):
         # get event
-        user_id = int(request.POST['user-id'])
         event_id = int(request.POST['event-id'])
         user = request.user
         event = Event.objects.get(pk=event_id)
