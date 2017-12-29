@@ -107,9 +107,7 @@ body {
 }
 
 
-/*
- * Cover
- */
+/* Cover */
 
 .cover {
   padding: 0 1.5rem;
@@ -143,9 +141,7 @@ body {
 }
 
 
-/*
- * Footer
- */
+/* Footer */
 
 .mastfoot {
   color: #c06400;
@@ -162,7 +158,7 @@ body {
   color: #c06400;
 }
 
-/*Sign*/
+/* Signin */
 .signin, .register{
   color: #FFF;
   cursor: pointer;
@@ -192,7 +188,7 @@ body {
 }
 
 
-/*Create Event*/
+/* Create Event */
 .event-type-list{
   list-decoration: none;
   margin: 0;
@@ -259,9 +255,24 @@ body {
   cursor: pointer;
 }
 
-{
-  border: 1px solid #c06400;
-  background-color: 
+.pagination{
+  margin: 5% auto;
+}
+
+.pagination li{
+  padding: 1.5em;
+  color: #c06400;
+  border: 1px solid  #c06400;
+}
+
+.pagination li a{
+  color: #c06400;
+  text-decoration: none;
+}
+
+.pagination .active{
+  background-color: #c06400;
+  color: #FFF;
 }
 
 .event-description{
@@ -322,9 +333,8 @@ body {
 .event-share-option{
   display: none;
 }
-/*
- * Affix and center
- */
+
+/* Affix and center */
 
 @media (min-width: 40em) {
   /* Pull out the header and footer */

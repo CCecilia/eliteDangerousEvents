@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 import ijson
@@ -38,6 +39,17 @@ class HtmlRendering:
     def allEvents(request):
         # Get Events
         events = Event.objects.all()
+        page = request.GET.get('page')
+        paginator = Paginator(events, 20)
+
+        try:
+           events = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            events = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            events = paginator.page(paginator.num_pages)
 
         context = {
             'page': 'allEvents',
@@ -50,12 +62,24 @@ class HtmlRendering:
     def myEvents(request):
         # Dec  Vars
         user = request.user
+        page = request.GET.get('page')
 
         # redirect to signin page if user not found
         try:
             events = Event.objects.filter(creator=user)
         except TypeError:
             return redirect('signin')
+        
+        paginator = Paginator(events, 20)
+
+        try:
+            events = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            events = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            events = paginator.page(paginator.num_pages)
 
         context = {
             'page': 'myEvents',
@@ -337,3 +361,4 @@ class Utility:
                     print('added value:{} to DB'.format(value))
 
         return
+
