@@ -320,7 +320,7 @@ class EventViews:
         # create response
         response = {
             'status': 'success',
-            'event_search_results': event_search_results
+            'event_search_results': event_search_results[:10]
         }
 
         # send reponse JSON

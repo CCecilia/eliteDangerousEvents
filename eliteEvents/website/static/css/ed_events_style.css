@@ -295,7 +295,7 @@ body {
   border-color:  #c06400;
 }
 
-.event-preview{
+.event-preview, .featured-event-preview{
   width: 22%;
   margin: 1%;
   border: 2px solid  #c06400;
@@ -317,7 +317,7 @@ body {
   display: none;
 }
 
-#confirm-removal-popup{
+#confirm-removal-popup, #signin-required-popup{
   width: 25%;
   padding: 3%;
   overflow: scroll;

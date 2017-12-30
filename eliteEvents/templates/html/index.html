@@ -2,7 +2,7 @@
 {% block content %}
 {% load staticfiles %}
           <main role="main" class="inner cover">
-          	
+
             <h1 class="cover-heading">{{ coverHeading }}</h1>
             <form name="event-search-form" action="/searchEvents/" method="post">
             	{% csrf_token %}
@@ -12,7 +12,7 @@
       		<h1 class="cover-heading">Featured</h1>
       		<div class="row featured-events">
                 {% for event in featuredEvents %}
-                    <div class="event-preview" data-id="{{ event.id }}">
+                    <div class="featured-event-preview" data-id="{{ event.id }}">
                         {% csrf_token %}
                         {% if event.event_type == 'combat' %}
                             <img class="event-type-img-sm" src="http://edassets.org/img/pilots-federation/combat/rank-9-combat.png" alt="Combat" data-type="combat"/>

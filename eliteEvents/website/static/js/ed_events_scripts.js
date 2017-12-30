@@ -377,6 +377,14 @@ $(document).ready(function(){
         dispalyEventDetails(event_id);
 	});
 
+    //
+    $('.featured-event-preview').click(function(e) {
+        //dec event id
+        var event_id = $(this).attr('data-id');
+
+        dispalyEventDetails(event_id);
+    });
+
 
     //hide popups
 	$('.cover-container, .remove-event-no').click(function(e) {
@@ -517,13 +525,13 @@ $(document).ready(function(){
     $(".share-event, .share-cancel").click(function(e) {
         //toggle event options shown
         $(".event-option").toggle();
-        $(".event-share-option").toggle();
-        x = {
-            'test_key': 'value1'
-        }
-        
+        $(".event-share-option").toggle();      
     });
 
 
+    //show signin popup
+    $(".show-signin-required-popup, .hide-signin-required-popup").click(function(e) {
+        $('#signin-required-popup').toggle()      
+    });
 
 });

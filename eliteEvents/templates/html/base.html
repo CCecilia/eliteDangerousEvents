@@ -99,6 +99,10 @@
             <button class="join-event event-option" type="submit">Join</button>
           </form>
         {% endif %}
+      {% else %}
+        <br>
+        <br>
+        <button class="show-signin-required-popup event-option">Join</button>
       {% endif %}
     </div>
 
@@ -108,6 +112,13 @@
       </p>
       <button class="remove-event-yes">Yes</button>
       <button class="remove-event-no">No</button>
+    </div>
+
+    <div id="signin-required-popup">
+      <p>
+        Please <a href="/signin/">sign in/register</a> in order to join or create events.
+      </p>
+      <button class="hide-signin-required-popup event-option">Close</button>
     </div>
     
 
