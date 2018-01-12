@@ -2,7 +2,18 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
+
 class Event(models.Model):
+    XBOX = 'XB'
+    PLAYSTATION = 'PS'
+    PC = 'PC'
+    
+    PLATFORMS = {
+        (XBOX, 'XBox'),
+        (PLAYSTATION, 'Playstation'),
+        (PC, 'Computer')
+    }
+
     name = models.CharField(max_length=200)
     event_type = models.CharField(max_length=200, null=True)
     creator = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
@@ -13,7 +24,8 @@ class Event(models.Model):
     end_time = models.TimeField(null=True)
     location = models.CharField(max_length=200, null=True)
     date_created = models.DateTimeField(auto_now_add=True)
-    description = models.TextField()
+    description = models.TextField(default='Please add a description')
+    platform = models.CharField(max_length=2, choices=PLATFORMS, default=PC)
 
     def __str__(self):
         return self.name

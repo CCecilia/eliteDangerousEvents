@@ -28,26 +28,44 @@ $(document).ready(function(){
                     '.event-popup-description,'+
                     '.event-popup-start-date,'+
                     '.event-popup-location'
-                ).empty();
-                
+                ).empty(); 
+
                 //fill in with event info
                 if(event[0].fields.event_type == 'combat'){
                     $(".event-popup-type").attr({
-                        'src': 'http://edassets.org/img/pilots-federation/combat/rank-9-combat.png',
+                        'src': '/static/img/rank-9-combat.png',
                         'alt': event[0].fields.event_type
                     })
                 }else if(event[0].fields.event_type == 'exploration'){
                     $(".event-popup-type").attr({
-                        'src': 'http://edassets.org/img/pilots-federation/explorer/rank-9.png',
+                        'src': '/static/img/rank-9-exploration.png',
                         'alt': event[0].fields.event_type
                     })
                 }else{
                     $(".event-popup-type").attr({
-                        'src': 'http://edassets.org/img/pilots-federation/trading/rank-9-trading.png',
+                        'src': '/static/img/rank-9-trading.png',
                         'alt': event[0].fields.event_type
                     })
                 }
-                console.log();
+
+                if(event[0].fields.platform == 'PC'){
+                    $(".event-popup-platform").attr({
+                        'src': '/static/img/pc-icon.png',
+                        'alt': event[0].fields.platform
+                    })
+                }else if(event[0].fields.platform == 'XB'){
+                    $(".event-popup-platform").attr({
+                        'src': '/static/img/xbox-icon-ed-org.png',
+                        'alt': event[0].fields.platform
+                    })
+                }else{
+                    $(".event-popup-platform").attr({
+                        'src': '/static/img/Playstation-icon.png',
+                        'alt': event[0].fields.platform
+                    })
+                }
+
+                console.log(event[0].fields);
                 $('.event-popup-name').text(event[0].fields.name);
                 $('.event-popup-description').text(event[0].fields.description);
                 $('.event-popup-start-date').text('Start Date:'+ event[0].fields.start_date);
@@ -57,7 +75,7 @@ $(document).ready(function(){
                 $('.event-popup-location').text('Location:' + event[0].fields.location);
                 $('.attendance').text(event[0].fields.attendees.length);
                 $('input[name="event-id"]').val(event[0].pk);
-                $('#event-details-popup').fadeIn(300);
+                $('#event-details-popup').fadeIn(600);
             },
             fail: function(data){
                 alert('unknown error occurred');
@@ -195,6 +213,17 @@ $(document).ready(function(){
     });
 
 
+    //platform type Select
+    $(".platform-type-img").click(function(e) {
+        //add select class to element
+        $(".platform-type-img").removeClass('platform-type-selected');
+        $(this).addClass('platform-type-selected');
+
+        //add value to input
+        $("input[name='platform-type']").val($(this).attr('data-type'));
+    });
+
+
     //Event type Select
     $(".event-type-img").click(function(e) {
     	//add select class to element
@@ -235,6 +264,12 @@ $(document).ready(function(){
                         $('#location-results-table').append($(result_html));
                     }
 
+                    // clear table after 10s
+                    setTimeout(function(){
+                        // empty location table
+                        $("#location-results-table").empty();
+                    }, 10000);
+
                 },
                 fail: function(data){
                     // stop loading animation
@@ -264,7 +299,8 @@ $(document).ready(function(){
     //Event create
     $("form[name='event-create-form']").submit(function(e) {
     	//get form inputs
-    	var event_type = $("input[name='event-type']");
+        var event_type = $("input[name='event-type']");
+    	var platform_type = $("input[name='platform-type']");
     	var form_inputs = [
     		$("input[name='event-title']"),
     		$("input[name='event-location']"),
@@ -292,7 +328,13 @@ $(document).ready(function(){
     		//send user alert 
     		alert('please select an event type\ncombat, exploration, trading');
             return false
-    	}
+    	} 
+
+        if( !platform_type.val() ){
+            //send user alert 
+            alert('please select an platform\nXbox, Playstation, PC');
+            return false
+        }
 
         // serialize and submit search form
         $.ajax({
@@ -339,21 +381,33 @@ $(document).ready(function(){
 
                 	//iterate through results 
                 	var event_results = data.event_search_results;
-			    	for ( i = 0; i < event_results.length; i++ ) { 
+			    	for ( i in event_results ) { 
+                        let attendee_count;
+                        let platform_icon;
 
 			    		//set null attendee count to 0
-			    		if( !event_results[i].attendees ){
-			    			var attendee_count = 0;
-			    		}else{
-			    			var attendee_count = event_results[i].attendees
+			    		if( !event_results[i].attendees ) {
+			    			attendee_count = 0;
+			    		}else {
+			    			attendee_count = event_results[i].attendees;
 			    		}
 
+                        // platform icon
+                        if( event_results[i].platform == 'XB' ) {
+                            platform_icon = '<img class="event-platform-img-icon" src="/static/img/xbox-icon-ed-org.png" alt="XBox" data-type="XB"/>';
+                        }else if( event_results[i].platform == 'PS' ) {
+                            platform_icon = '<img class="event-platform-img-icon" src="/static/img/Playstation-icon.png" alt="Playstation" data-type="PS"/>';
+                        }else{
+                            platform_icon = '<img class="event-platform-img-icon" src="/static/img/pc-icon.png" alt="PC" data-type="PC"/>';
+                        }
+
 			    		//create event preview element
-			    		var event_preview_html = ''+
+			    		let event_preview_html = ''+
 			    		'<div class="event-preview" data-id="'+event_results[i].id+'">' +
 			    			'<img class="event-type-img-sm" src="http://edassets.org/img/pilots-federation/combat/rank-9-combat.png" alt="Combat" data-type="combat"/>' +
 			    			'<p>'+event_results[i].name+'</p>' +
 			    			'<p>'+event_results[i].start_date+'</p>' + 
+                            '<span>'+platform_icon+'</span>' +
 			    			'<span><i class="fa fa-users" aria-hidden="true"></i></span><span class="attendee-count">'+attendee_count+'</span>' +
 		    			'</div>';
 

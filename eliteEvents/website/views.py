@@ -190,6 +190,7 @@ class EventViews:
         # dec vars
         event_title = str(request.POST['event-title']).title()
         event_type = str(request.POST['event-type'])
+        event_platform = str(request.POST['platform-type'])
         event_location = str(request.POST['event-location'])
         event_description = str(request.POST['event-description'])
         event_start_date = str(request.POST['event-start-date'])
@@ -208,7 +209,8 @@ class EventViews:
             start_date=event_start_date,
             start_time=event_start_time,
             end_date=event_end_date,
-            end_time=event_end_time
+            end_time=event_end_time,
+            platform=event_platform
         )
 
         # #create response
@@ -314,7 +316,8 @@ class EventViews:
             'name',
             'event_type',
             'start_date',
-            'attendees'
+            'attendees',
+            'platform'
         ))
 
         # create response

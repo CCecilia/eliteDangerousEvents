@@ -9,16 +9,31 @@
 	            <h2 class="event-label cover-heading">Event Type</h2>
 	            <ul class="event-type-list">
 	            	<li>
-	            		<img class="event-type-img" src="http://edassets.org/img/pilots-federation/combat/rank-9-combat.png" alt="Combat" data-type="combat"/><br>
+	            		<img class="event-type-img" src="{% static 'img/rank-9-combat.png' %}" alt="Combat" data-type="combat"/><br>
 	            		Combat
 	            	</li>
 	            	<li>
-	            		<img class="event-type-img" src="http://edassets.org/img/pilots-federation/explorer/rank-9.png" alt="Exploration" data-type="exploration"/><br>
+	            		<img class="event-type-img" src="{% static 'img/rank-9-exploration.png' %}" alt="Exploration" data-type="exploration"/><br>
 	            		Exploration
 	            	</li>
 	            	<li>
-	            		<img class="event-type-img" src="http://edassets.org/img/pilots-federation/trading/rank-9-trading.png" alt="Trading" data-type="trading"/><br>
+	            		<img class="event-type-img" src="{% static 'img/rank-9-trading.png' %}" alt="Trading" data-type="trading"/><br>
 	            		Trading
+	            	</li>
+	            </ul>
+	            <h2 class="platform-label cover-heading">Platform</h2>
+	            <ul class="platform-type-list">
+	            	<li>
+	            		<img class="platform-type-img" src="{% static 'img/xbox-icon-ed-org.png' %}" alt="XBox" data-type="XB"/><br>
+	            		XBox 
+	            	</li>
+	            	<li>
+	            		<img class="platform-type-img" src="{% static 'img/Playstation-icon.png' %}" alt="Playstation" data-type="PS"/><br>
+	            		Playstation
+	            	</li>
+	            	<li>
+	            		<img class="platform-type-img" src="{% static 'img/pc-icon.png' %}" alt="PC" data-type="PC"/><br>
+	            		PC
 	            	</li>
 	            </ul>
 	            <h2 class="event-label cover-heading">Start/End</h2>
@@ -37,6 +52,7 @@
 	            	</li>
 	            </ul>
 	            <input type="hidden" name="event-type"/>
+	            <input type="hidden" name="platform-type"/>
 	            <h2 class="event-label cover-heading">Event Location</h2>
 	            <input class="event-location" name="event-location" placeholder="Event Location" type="text"><span><i class="fa fa-search location-search-icon"></i></span>
 	            <div class="location-results-wrapper">

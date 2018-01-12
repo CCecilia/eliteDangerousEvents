@@ -15,15 +15,29 @@
                     <div class="featured-event-preview" data-id="{{ event.id }}">
                         {% csrf_token %}
                         {% if event.event_type == 'combat' %}
-                            <img class="event-type-img-sm" src="http://edassets.org/img/pilots-federation/combat/rank-9-combat.png" alt="Combat" data-type="combat"/>
+                            <img class="event-type-img-sm" src="{% static 'img/rank-9-combat.png' %}" alt="Combat" data-type="combat"/>
                         {% elif event.event_type == 'exploration' %}
-                            <img class="event-type-img-sm" src="http://edassets.org/img/pilots-federation/explorer/rank-9.png" alt="Combat" data-type="combat"/>
+                            <img class="event-type-img-sm" src="{% static 'img/rank-9-exploration.png' %}" alt="Exploration" data-type="exploration"/>
                         {% else %}
-                            <img class="event-type-img-sm" src="http://edassets.org/img/pilots-federation/trading/rank-9-trading.png" alt="Combat" data-type="combat"/>
+                            <img class="event-type-img-sm" src="{% static 'img/rank-9-trading.png' %}" alt="Trading" data-type="trading"/>
                         {% endif %}
                         <p>{{ event.name }}</p>
                         <p>{{ event.start_date }}</p>
-                        <span><i class="fa fa-users" aria-hidden="true"></i></span><span  class="attendee-count">{{ event.attendees.all.count }}</span>
+                        <span>
+                            {% if event.platform == 'PC' %}
+                                <img class="event-platform-img-icon" src="{% static 'img/pc-icon.png' %}" alt="PC" data-type="PC"/>
+                            {% elif event.platform == 'XB' %}
+                                <img class="event-platform-img-icon" src="{% static 'img/xbox-icon-ed-org.png' %}" alt="XBox" data-type="XB"/>
+                            {% else %}
+                                <img class="event-platform-img-icon" src="{% static 'img/Playstation-icon.png' %}" alt="Playstation" data-type="PS"/>
+                            {% endif %}
+                        </span>
+                        <span>
+                            <i class="fa fa-users" aria-hidden="true"></i>
+                        </span>
+                        <span  class="attendee-count">
+                            {{ event.attendees.all.count }}
+                        </span>
                     </div>
                 {% endfor %}
       		</div>

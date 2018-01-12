@@ -28,8 +28,9 @@ html,
 body {
   height: 100%;
   background-color: #333;
-}
-body {
+  scrollbar-base-color: black; 
+  scrollbar-arrow-color: black;
+  scrollbar-DarkShadow-Color: black; 
   color: #c06400;
   text-align: center;
   text-shadow: 0 .05rem .1rem rgba(0,0,0,.5);
@@ -189,34 +190,41 @@ body {
 
 
 /* Create Event */
-.event-type-list{
+.event-type-list, .platform-type-list{
   list-decoration: none;
   margin: 0;
   padding: 0;
 
 }
 
-.event-type-list li{
+.event-type-list li, .platform-type-list li{
   display: inline-block;
   width:20%;
   
 }
 
-.event-type-img{
+.event-type-img, .platform-type-img{
   width: 35%;
   height: auto;
   cursor: pointer;
   padding: 5%;
 }
 
-.event-type-img-sm{
+.event-type-img-sm, .platform-type-img-sm{
   width: 25%;
   height: auto;
   cursor: pointer;
   padding: 5%;
 }
 
-.event-type-selected{
+.event-platform-img-icon{
+  width: 16%;
+  height: auto;
+  cursor: pointer;
+  padding: 5%;
+}
+
+.event-type-selected, .platform-type-selected{
   border: 2px solid  #c06400;
    border-radius: 30%;
 }
@@ -315,6 +323,9 @@ body {
   top: 10%;
   left: 25%;
   display: none;
+  scrollbar-base-color: black; 
+  scrollbar-arrow-color: black;
+  scrollbar-DarkShadow-Color: black; 
 }
 
 #confirm-removal-popup, #signin-required-popup{

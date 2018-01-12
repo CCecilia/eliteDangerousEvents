@@ -76,7 +76,15 @@
       <p class="event-popup-start-time"></p>
       <p class="event-popup-end-date"></p>
       <p class="event-popup-end-time"></p>
-      <span><i class="fa fa-users" aria-hidden="true"></i></span><span class="attendance"></span>
+      <span>
+        <img class="event-popup-platform event-platform-img-icon" src="" alt=""/>
+      </span>
+      <span>
+        <i class="fa fa-users" aria-hidden="true"></i>
+      </span>
+      <span class="attendance">
+        
+      </span>
       <input name="event-id" type="hidden">
       {% if user.is_authenticated %}
         {% if page == 'myEvents' %}
