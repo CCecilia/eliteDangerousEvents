@@ -118,13 +118,17 @@ body {
   font-weight: 700;
 }
 .event-search-input, .signin-input, 
-.register-input, .event-name, .event-location{
+.register-input, .event-name, .event-location,
+.discord-input{
   width: 20em;
   height: 2.3em;
   margin: 2% 0;
   background-color: #333;
   color: #c06400;
   border-color:  #c06400;
+}
+.discord-input{
+  border-color: #7289DA;
 }
 .event-search-btn, .signin-btn, .register-btn, .event-create-btn,
 .event-option, .remove-event-yes, .event-share-option,

@@ -42,7 +42,7 @@ class HtmlRendering:
 
     def allEvents(request):
         # Get Events
-        events = Event.objects.all()
+        events = Event.objects.all().order_by('start_date')
 
         try:
             # filter out users own events if logged
@@ -143,7 +143,7 @@ class UserViews:
             user = User.objects.create_user(username, email, password)
 
             # login user
-            login(request, user)
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
 
             # create response
             response = {
@@ -161,7 +161,7 @@ class UserViews:
         user = authenticate(request, username=username, password=password)
 
         if user:
-            login(request, user)
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             # create response
             response = {
                 'status': 'success'
@@ -197,6 +197,7 @@ class EventViews:
         event_start_time = str(request.POST['event-start-time'])
         event_end_date = str(request.POST['event-end-date'])
         event_end_time = str(request.POST['event-end-time'])
+        discord_link = str(request.POST['discord-link'])
         creator = request.user
 
         # create event

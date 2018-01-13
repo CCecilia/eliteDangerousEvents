@@ -1,10 +1,12 @@
 
 from datetime import timedelta
-from django.test import TestCase, Client
+from django.test import TestCase, Client, tag
 from django.contrib.auth.models import User
+from django.urls import reverse
 from django.utils import timezone
 import json
 import lorem
+
 from .models import Event, SolarSystem
 
 
@@ -52,7 +54,8 @@ class EventModelTests(TestCase):
                 end_time=end_time,
                 location='Sol',
                 date_created=timezone.now(),
-                description=lorem.paragraph()
+                description=lorem.paragraph(),
+                discord_link='https://discord.gg/MN8m55'
             )
 
     def test_event_associated_to_auth_user(self):
@@ -72,31 +75,39 @@ class EventModelTests(TestCase):
 
         self.assertEqual(event.attendees.all().count(), 5)
 
-    def test_myEvents_view(self):
-        response = self.client.get('/allEvents/')
+    @tag('quick')
+    def test_allEvents_view(self):
+        response = self.client.get(reverse('website:allEvents'))
         # check reponse and template
         self.assertEqual(response.status_code, 200)
         # cehck all events are returned
         self.assertTrue(len(response.context['events']) == 5)
         self.assertTemplateUsed(response, 'html/allEvents.html')
 
-    def test_editEvent_view(self):
-        response = self.client.get('/event/edit/1/')
-        # user = User.objects.get(pk=1)
-        # self.c.force_login(user)
+    def test_editEvent_view_redirect(self):
+        response = self.client.get(reverse('website:editEvent', kwargs={'event_id':1}))
         
         # check reponse and template
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'html/editEvent.html')
+        self.assertEqual(response.status_code, 302)
 
-        # check correct event is returned
-        correct_event = Event.objects.get(pk=1)
-        self.assertEqual(response.context['event'], correct_event)
+    # def test_editEvent_view(self):
+    #     user = User.objects.get(pk=1)
+    #     self.c.force_login(user)
+    #     response = self.client.get(reverse('website:editEvent', kwargs={'event_id':1}))
+        
+    #     # check reponse and template
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertTemplateUsed(response, 'html/editEvent.html')
 
+    #     # check correct event is returned
+    #     correct_event = Event.objects.get(pk=1)
+    #     self.assertEqual(response.context['event'], correct_event)
+
+    @tag('quick')
     def test_search_events(self):
         # Check event search
         response = self.c.post(
-            '/event/search/', 
+            reverse('website:searchEvents'), 
             json.dumps({'event_search': 'Test Event'}),
             'json',
             HTTP_X_REQUESTED_WITH='XMLHttpRequest',
@@ -111,10 +122,11 @@ class EventModelTests(TestCase):
             self.assertFalse(event_search_results[i]['event_type'] == '')
             self.assertEqual(event_search_results[i]['attendees'], None)
 
+    @tag('quick')
     def test_event_details(self):
         # Check event deatils
         response = self.c.post(
-            '/event/details/', 
+            reverse('website:eventDetails'),
             json.dumps({'event_id': 1}),
             'json',
             HTTP_X_REQUESTED_WITH='XMLHttpRequest',
@@ -133,7 +145,7 @@ class EventModelTests(TestCase):
         self.c.force_login(user)
 
         # Check event search
-        response = self.c.post('/event/join/', {
+        response = self.c.post(reverse('website:eventJoin'), {
             'event-id': 1,
             'user-id': 1,
         })
@@ -151,7 +163,7 @@ class EventModelTests(TestCase):
         self.c.force_login(user)
 
         # Check event create
-        response = self.c.post('/event/create/', {
+        response = self.c.post(reverse('website:createEvent'), {
             'event-title': 'test create event',
             'event-type': 'combat',
             'event-location': 'ltt 9455',
@@ -159,7 +171,9 @@ class EventModelTests(TestCase):
             'event-start-date': today.date(),
             'event-end-date': today.date(),
             'event-end-time': today.time(),
-            'event-start-time': today.time()
+            'event-start-time': today.time(),
+            'platform-type': 'PC',
+            'discord-link': 'https://discord.gg/MN8m55'
         })
 
         new_event_count = Event.objects.all().count()
@@ -201,32 +215,34 @@ class RenderViewsTests(TestCase):
             password='password'
         )
 
+    @tag('quick')
     def test_index_view(self):
-        response = self.client.get('')
+        response = self.client.get(reverse('website:index'))
         # check reponse and template
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'html/index.html')
 
-    def test_createEvent_view_(self):
-        response = self.client.get('/createEvent/')
-        user = User.objects.get(pk=1)
-        self.c.force_login(user)
-        # check reponse and template
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'html/createEvent.html')
+    # @tag('quick')
+    # def test_createEvent_view(self):
+    #     response = self.client.get(reverse('website:createEvent'))
+    #     user = User.objects.get(pk=1)
+    #     self.c.force_login(user)
+    #     # check reponse and template
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertTemplateUsed(response, 'html/createEvent.html')
 
     def test_createEvent_view_redirect(self):
-        response = self.client.get('/createEvent/')
+        response = self.client.get(reverse('website:createEvent'))
         # check reponse and template
         self.assertEqual(response.status_code, 302)
 
     def test_allEvents_view(self):
-        response = self.client.get('/myEvents/')
+        response = self.client.get(reverse('website:myEvents'))
         # check redirect for user not signed in
         self.assertEqual(response.status_code, 302)
 
     def test_signin_view(self):
-        response = self.client.get('/signin/')
+        response = self.client.get(reverse('website:signin'))
         # check redirect for user not signed in
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'html/signin.html')
@@ -246,20 +262,20 @@ class AjaxViewsTests(TestCase):
         for i in range(5):
             SolarSystem.objects.create(name="LTT 944{}".format(i) )
 
-
+    @tag('quick')
     def test_ajax_register_success(self):
         # Check register success
-        response = self.c.post('/register/', {
+        response = self.c.post(reverse('website:register'), {
             'register-username': 'testuser1',
             'register-email': 'testuser1@email.com',
-            'register-password': 'password'
+            'register-password': 'password',
         })
         self.assertEqual(json.loads(response.content)['status'], 'success')
         self.assertEqual(response.status_code, 200)
 
     def test_ajax_register_username_in_use(self):
         # Check register failed  username taken
-        response = self.c.post('/register/', {
+        response = self.c.post(reverse('website:register'), {
             'register-username': 'testuser',
             'register-email': 'testuser@email.com',
             'register-password': 'password'
@@ -269,7 +285,7 @@ class AjaxViewsTests(TestCase):
       
     def test_ajax_register_email_in_use(self):
         # Check register failed email in use
-        response = self.c.post('/register/', {
+        response = self.c.post(reverse('website:register'), {
             'register-username': 'testuser1',
             'register-email': 'testuser@email.com',
             'register-password': 'password'
@@ -279,7 +295,7 @@ class AjaxViewsTests(TestCase):
 
     def test_ajax_register_password_length(self):
         # Check register failed  password length
-        response = self.c.post('/register/', {
+        response = self.c.post(reverse('website:register'), {
             'register-username': 'testuser2',
             'register-email': 'testuser2@email.com',
             'register-password': 'pass'
@@ -289,16 +305,25 @@ class AjaxViewsTests(TestCase):
 
     def test_ajax_login_fail(self):
         # Check login fail
-        response = self.c.post('/login/', {
+        response = self.c.post(reverse('website:loginUser'), {
             'signin-username': 'testuser5000',
             'signin-password': 'password'
         })
         self.assertEqual(json.loads(response.content)['status'], 'fail')
 
+    @tag('quick')
+    def test_ajax_login_success(self):
+        # Check login success
+        response = self.c.post(reverse('website:loginUser'), {
+            'signin-username': 'testuser',
+            'signin-password': 'password'
+        })
+        self.assertEqual(response.status_code, 200)
+
     def test_search_systems(self):
         # Check systems search
         response = self.c.post(
-            '/search/systems/', 
+            reverse('website:searchSystems'), 
             json.dumps({'system_query': 'LTT'}),
             'json',
             HTTP_X_REQUESTED_WITH='XMLHttpRequest',
