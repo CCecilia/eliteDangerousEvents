@@ -179,5 +179,5 @@ eliteEvents/.ebextensions/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
 
-
+secret.py
 
