@@ -148,9 +148,15 @@ body {
   color: #c06400;
 }
 
-.footer-link, .footer-link:hover, .footer-link:visited{
+.footer-link, .footer-link:hover, .footer-link:visited,
+.google-sign-btn, .google-sign-btn:visited{
   text-decoration: none;
   color: #c06400;
+}
+
+.google-sign-btn:hover{
+  color: #FFF;
+  text-decoration: none;
 }
 
 .footer-disclaimer{
@@ -186,6 +192,9 @@ body {
 .register-error,.login-error{
   display: none;
   color: red;
+}
+.google-sign-btn{
+  color: #c06400;
 }
 
 

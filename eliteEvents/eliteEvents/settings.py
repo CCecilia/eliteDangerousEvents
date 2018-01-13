@@ -20,7 +20,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = google_oauth_secret
 
 
 ALLOWED_HOSTS = [
-    '127.0.0.1',
+    'localhost',
     'elitedangerousevents.us-east-1.elasticbeanstalk.com'
 ]
 

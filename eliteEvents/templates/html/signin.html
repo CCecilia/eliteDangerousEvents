@@ -10,6 +10,10 @@
             	<input class="signin-input" name="signin-username" type="text" placeholder="Username"/>
             	<input class="signin-input" name="signin-password" type="password" placeholder="Password"/>
             	<button class="btn btn-outline signin-btn">Sign In</button>
+                  <br>
+                  <br>
+                  <a class="google-sign-btn" href="{% url 'social:begin' 'google-oauth2' %}">Login with Google</a>
+                  
             </form>
             <form  class="register-form" name="register-form" action="/register/" method="post">
             	{% csrf_token %}
