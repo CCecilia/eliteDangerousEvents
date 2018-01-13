@@ -12,7 +12,12 @@
             	<button class="btn btn-outline signin-btn">Sign In</button>
                   <br>
                   <br>
-                  <a class="google-sign-btn" href="{% url 'social:begin' 'google-oauth2' %}">Login with Google</a> 
+                  <span>Or</span>
+                  <br>
+                  <br>
+                  <a class="google-signin-btn" href="{% url 'social:begin' 'google-oauth2' %}">
+                        <img src="{% static 'img/google-signin-btn.png' %}" width="12%" height="auto"/>
+                  </a> 
             </form>
             <form  class="register-form" name="register-form" action="/register/" method="post">
             	{% csrf_token %}

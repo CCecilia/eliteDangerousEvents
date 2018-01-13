@@ -197,20 +197,19 @@ body {
   display: none;
   color: red;
 }
-.google-sign-btn{
-  color: #c06400;
-}
 
 
 /* Create Event */
-.event-type-list, .platform-type-list{
+.event-type-list, .platform-type-list, 
+.event-icons-list{
   list-decoration: none;
   margin: 0;
   padding: 0;
 
 }
 
-.event-type-list li, .platform-type-list li{
+.event-type-list li, .platform-type-list li,
+.event-icons-list li{
   display: inline-block;
   width:20%;
   

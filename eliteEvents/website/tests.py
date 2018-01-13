@@ -146,8 +146,7 @@ class EventModelTests(TestCase):
 
         # Check event search
         response = self.c.post(reverse('website:eventJoin'), {
-            'event-id': 1,
-            'user-id': 1,
+            'event-id': 1
         })
         new_attendance = json.loads(response.content)['attendance']
 
@@ -222,14 +221,16 @@ class RenderViewsTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'html/index.html')
 
-    # @tag('quick')
-    # def test_createEvent_view(self):
-    #     response = self.client.get(reverse('website:createEvent'))
-    #     user = User.objects.get(pk=1)
-    #     self.c.force_login(user)
-    #     # check reponse and template
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, 'html/createEvent.html')
+    @tag('quick')
+    def test_createEvent_view(self):
+        user = User.objects.get(pk=1)
+        self.c.force_login(user)
+
+        response = self.client.get(reverse('website:createEvent'))
+        
+        # check reponse and template
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'html/createEvent.html')
 
     def test_createEvent_view_redirect(self):
         response = self.client.get(reverse('website:createEvent'))
