@@ -1,6 +1,7 @@
 import os
 import random
 import string
+from .secret import *
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -11,12 +12,10 @@ random_key = ''.join([random.SystemRandom().choice("{}{}{}".format(string.ascii_
 
 DEBUG = True
 
-if DEBUG == False:
-    SECRET_KEY = random_key
-else:
-    SECRET_KEY = 'f-_k-o5+&x34=b)xh@w-fuk7=k4gz7l1&s2i&3mp*oj#^i=z80'
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY =''
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = ''
+SECRET_KEY = django_secret_key
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = google_oauth_key
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = google_oauth_secret
 
 
 
