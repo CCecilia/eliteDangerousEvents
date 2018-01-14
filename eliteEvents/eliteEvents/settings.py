@@ -1,4 +1,4 @@
-import djcelery
+# import djcelery
 import os
 import random
 import string
@@ -47,8 +47,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'social_django',
-    'djcelery',
-    'kombu.transport.django'
+    # 'djcelery',
+    # 'kombu.transport.django'
 ]
 
 
@@ -135,7 +135,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'website/static/')
 LOGIN_URL = '/signin/'
 LOGIN_REDIRECT_URL = '/'
 
-djcelery.setup_loader()
-BROKER_URL = 'django://'
-CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+# djcelery.setup_loader()
+# BROKER_URL = 'django://'
+# CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
 
