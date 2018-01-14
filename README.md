@@ -44,6 +44,23 @@ Install dependencies from requirements.txt
 pip install -r requirements.txt
 ```
 
+Create optional secret.py file in eliteDangerousEvents/eliteEvents/eliteEvents/
+
+```
+NOTE
+secret.py should contain the django SECRET KEY and Google Oauth key as below.
+If no secret.py is created a random secret key is generated and Oauth is unusable.
+python manage.py runserver
+```
+
+secret.py
+
+```
+google_oauth_key = GOOGLE API SECRET
+google_oauth_secret = GOOGLE API ID
+django_secret_key = YOUR DJANGO SECRET KEY
+```
+
 Start your local server
 
 ```

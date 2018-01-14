@@ -12,7 +12,10 @@ random_key = ''.join([random.SystemRandom().choice("{}{}{}".format(string.ascii_
 
 DEBUG = True
 
-SECRET_KEY = django_secret_key
+if django_secret_key:
+    SECRET_KEY = django_secret_key
+else:
+    SECRET_KEY = random_key
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = google_oauth_key
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = google_oauth_secret
