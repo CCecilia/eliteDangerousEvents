@@ -1,10 +1,31 @@
 /**
  * Created by Christian Cecilia on 12/04/17.
  */
+var time_zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
 function isValidEmailAddress(emailAddress) {
     let pattern = /^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
     return pattern.test(emailAddress);
-};
+}
+
+function normalizeStartEndDT(datetime) {
+    let utc_date = new Date(datetime);
+    let local_dt = utc_date.toLocaleString().split(',');
+    let time_with_seconds = local_dt[1].split(':');
+
+    //  reconstruct time with out seconds
+    let hours = time_with_seconds[0];
+    let mins = time_with_seconds[1];
+    let am_pm = time_with_seconds[2].split(' ')[1];
+    let formatted_time = `${hours}:${mins} ${am_pm}`;
+
+    return {
+        date: local_dt[0],
+        time: formatted_time
+    };
+}
+
+
 
 $(document).ready(function(){
 	//add csrf token to headers
@@ -12,6 +33,14 @@ $(document).ready(function(){
         headers: {
             "X-CSRFToken": $("input[name='csrfmiddlewaretoken']").val()
         }
+    });
+
+    // set user's timezone
+    let tz_form = encodeURI(`timezone=${time_zone}`);
+    $.ajax({
+        type: "POST",
+        url: "/setUserTz/",
+        data: tz_form
     });
 
     function dispalyEventDetails(event_id){
@@ -67,14 +96,16 @@ $(document).ready(function(){
                     })
                 }
 
-                console.log(event[0].fields);
+                let start_date = normalizeStartEndDT(event_data.start_date)
+                let end_date = normalizeStartEndDT(event_data.end_date)
+
                 $('.event-popup-name').text(event_data.name);
                 $('.event-popup-description').text(event_data.description);
-                $('.event-popup-start-date').text('Start Date:'+ event_data.start_date);
-                $('.event-popup-start-time').text('Start Time:'+ event_data.start_time);
-                $('.event-popup-end-date').text('End Date:' + event_data.end_date);
-                $('.event-popup-end-time').text('End Time:' + event_data.end_time);
-                $('.event-popup-location').text('Location:' + event_data.location);
+                $('.event-popup-start-date').text('Start Date: '+ start_date.date);
+                $('.event-popup-start-time').text('Start Time: '+ start_date.time);
+                $('.event-popup-end-date').text('End Date: ' + end_date.date);
+                $('.event-popup-end-time').text('End Time: ' + end_date.time);
+                $('.event-popup-location').text('Location: ' + event_data.location);
                 $('.attendance').text(event_data.attendees.length);
                 $('input[name="event-id"]').val(event[0].pk);
                 $('#event-details-popup').fadeIn(600);
@@ -300,9 +331,13 @@ $(document).ready(function(){
 
     //Event create
     $("form[name='event-create-form']").submit(function(e) {
+        //Stop html form submission
+        e.preventDefault(); 
+
     	//get form inputs
         let event_type = $("input[name='event-type']");
     	let platform_type = $("input[name='platform-type']");
+        
     	let form_inputs = [
     		$("input[name='event-title']"),
     		$("input[name='event-location']"),
@@ -339,29 +374,37 @@ $(document).ready(function(){
         }
 
         // serialize and submit search form
+        // let formData = $(this).serialize()
+        // formData = formData + encodeURI(`&time-zone=${time_zone}`);
+
         $.ajax({
             type: "POST",
             url: "/event/create/",
             data: $(this).serialize(), 
             success: function(data){
-                //clear out create form
-                for ( i in form_inputs ) { 
-                    form_inputs[i].val('');
+                if( data.status === 'success' ){
+                    // clear out create form
+                    for ( i in form_inputs ) { 
+                        form_inputs[i].val('');
+                    }
+                    event_type.val('');
+                    platform_type.val('');
+                    $("input[name='discord-link']");
+                    //uncheck event type
+                    $(".event-type-img").removeClass('event-type-selected');
+                    $(".platform-type-img").removeClass('platform-type-selected');
+                    
+                    //display detail popup
+                    dispalyEventDetails(data.event_id);
+                }else{
+                    window.alert(data.error_msg);
                 }
-                event_type.val('');
-                //uncheck event type
-                $(".event-type-img").removeClass('event-type-selected');
-                
-                //display detail popup
-                dispalyEventDetails(data.event_id);
+                    
             },
             fail: function(data){
                 alert('unknown server error occurred');
             }
         });
-
-        //Stop html form submission
-        e.preventDefault(); 
     });
 
 
@@ -501,7 +544,8 @@ $(document).ready(function(){
     $("form[name='event-edit-form']").submit(function(e) {
     	//get form inputs
     	let event_title = $("input[name='event-title']");
-    	let event_type = $("input[name='event-type']");
+        let event_type = $("input[name='event-type']");
+    	let platform_type = $("input[name='platform-type']");
     	let event_location = $("input[name='event-location']");
     	let event_description = $(".event-description");
     	let user_id = $("input[name='event-creator-id']").val();
@@ -517,8 +561,12 @@ $(document).ready(function(){
             }, 3000);
             return false
     	}else if( !event_type.val() ){
+            //send user alert 
+            alert('please select an event type\ncombat, exploration, trading');
+            return false
+        }else if( !platform_type.val() ){
     		//send user alert 
-    		alert('please select an event type\ncombat, exploration, trading');
+    		alert('please select an event platform\nXbox, Playstation, Pc');
             return false
     	}else if( !event_location.val() ){
 	    	//add border
@@ -539,18 +587,23 @@ $(document).ready(function(){
             return false
     	}
 
-        // serialize and submit search form
+        // serialize and submit edit form
         $.ajax({
             type: "POST",
             url: $(this).attr('action'),
             data: $(this).serialize(), 
             success: function(data){
-                //refresh screen
-                window.location.reload();
+                if( data.status === 'success'){
+                    //refresh screen
+                    window.location.reload();
+                }else{
+                    alert(data.error_msg);
+                }   
             },
             fail: function(data){
                 alert('unknown server error occurred');
             }
+                
         });
 
         //Stop html form submission

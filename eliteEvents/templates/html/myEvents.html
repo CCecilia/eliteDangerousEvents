@@ -19,7 +19,7 @@
                                         <img class="event-type-img-sm" src="http://edassets.org/img/pilots-federation/trading/rank-9-trading.png" alt="Combat" data-type="combat"/>
                                     {% endif %}
                                     <p>{{ event.name|truncatechars:18 }}</p>
-                                    <p>{{ event.start_date }}</p>
+                                    <p>{{ event.start_date.date }}</p>
                                     <span>
                                         {% if event.platform == 'PC' %}
                                             <img class="event-platform-img-icon" src="{% static 'img/pc-icon.png' %}" alt="PC" data-type="PC"/>
@@ -82,7 +82,7 @@
                                         <img class="event-type-img-sm" src="{% static 'img/rank-9-trading.png' %}" alt="Trading" data-type="trading"/>
                                     {% endif %}
                                     <p>{{ event.name|truncatechars:18 }}</p>
-                                    <p>{{ event.start_date }}</p>
+                                    <p>{{ event.start_date.date }}</p>
                                     <span>
                                         {% if event.platform == 'PC' %}
                                             <img class="event-platform-img-icon" src="{% static 'img/pc-icon.png' %}" alt="PC" data-type="PC"/>

@@ -14,6 +14,7 @@ urlpatterns = [
     path('register/', views.UserViews.register, name='register'),
     path('login/', views.UserViews.loginUser, name='loginUser'),
     path('logout/', views.UserViews.logoutUser, name='logoutUser'),
+    path('setUserTz/', views.UserViews.setUserTz, name='setUserTz'),
     path('event/update/<int:event_id>/', views.EventViews.updateEvent, name='updateEvent'),
     path('event/remove/', views.EventViews.removeEvent, name='removeEvent'),
     path('event/create/', views.EventViews.createEvent, name='createEvent'),

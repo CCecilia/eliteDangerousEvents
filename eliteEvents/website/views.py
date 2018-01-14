@@ -1,4 +1,5 @@
 __author__ = 'christian.cecilia1@gmail.com'
+from datetime import datetime
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -6,13 +7,17 @@ from django.core import serializers
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.utils import timezone
+from django.utils.deprecation import MiddlewareMixin
 import ijson
 import json
 import os
+import pytz
 from .models import Event, SolarSystem
 
 
 class HtmlRendering:
+
     def index(request):
         all_events = Event.objects.all().order_by('-attendees')
         featuredEvents = all_events[:8]
@@ -52,7 +57,7 @@ class HtmlRendering:
         paginator = Paginator(events, 20)
 
         try:
-           events = paginator.page(page)
+            events = paginator.page(page)
         except PageNotAnInteger:
             # If page is not an integer, deliver first page.
             events = paginator.page(1)
@@ -65,6 +70,7 @@ class HtmlRendering:
             'coverHeading': 'All Events',
             'events': events
         }
+
         return render(request, 'html/allEvents.html', context)
 
     @login_required
@@ -114,6 +120,11 @@ class HtmlRendering:
     def editEvent(request, event_id):
         # Dec  Vars
         event = get_object_or_404(Event, pk=event_id)
+        local_tz = request.session['django_timezone']
+
+        event.start_date = Utility.toLocal(event.start_date.date(), event.start_date.time(), pytz.timezone(local_tz))
+        event.end_date = Utility.toLocal(event.end_date.date(), event.end_date.time(), pytz.timezone(local_tz))
+
         context = {
             'page': 'editEvent',
             'coverHeading': 'Edit Event',
@@ -193,6 +204,10 @@ class UserViews:
         # send to home page
         return redirect('index')
 
+    def setUserTz(request):
+        request.session['django_timezone'] = request.POST['timezone']
+        return JsonResponse({'status': 200})
+
 
 class EventViews:
 
@@ -209,29 +224,44 @@ class EventViews:
         event_end_date = str(request.POST['event-end-date'])
         event_end_time = str(request.POST['event-end-time'])
         discord_link = str(request.POST['discord-link'])
+        time_zone = request.session['django_timezone']
+        local_tz = pytz.timezone(time_zone)
         creator = request.user
+        start_date = Utility.toUTC(event_start_date, event_start_time, local_tz)
+        end_date = Utility.toUTC(event_end_date, event_end_time, local_tz)
 
-        # create event
-        new_event = Event.objects.create(
-            name=event_title,
-            event_type=event_type,
-            creator=creator,
-            location=event_location,
-            description=event_description,
-            start_date=event_start_date,
-            start_time=event_start_time,
-            end_date=event_end_date,
-            end_time=event_end_time,
-            platform=event_platform,
-            discord_link=discord_link
-        )
+        # check start/end dt's make sense
+        if start_date < datetime.now(pytz.utc):
+            # create response
+            response = {
+                'status': 'fail',
+                'error_msg': 'Start date needs to be in the future.'
+            }
+        elif start_date > end_date:
+            # create response
+            response = {
+                'status': 'fail',
+                'error_msg': 'End date/time has to come after start date/time.'
+            }
+        else:
+            # create event
+            new_event = Event.objects.create(
+                name=event_title,
+                event_type=event_type,
+                creator=creator,
+                location=event_location,
+                description=event_description,
+                start_date=start_date,
+                end_date=end_date,
+                platform=event_platform,
+                discord_link=discord_link
+            )
 
-        # #create response
-        response = {
-            'status': 'success',
-            'event_id': new_event.id
-
-        }
+            # create response
+            response = {
+                'status': 'success',
+                'event_id': new_event.id
+            }
 
         # send reponse JSON
         return JsonResponse(response)
@@ -247,26 +277,43 @@ class EventViews:
         event_start_time = str(request.POST['edit-event-start-time'])
         event_end_date = str(request.POST['edit-event-end-date'])
         event_end_time = str(request.POST['edit-event-end-time'])
+        time_zone = request.session['django_timezone']
+        discord_link = str(request.POST['discord-link'])
+        local_tz = pytz.timezone(time_zone)
         event = get_object_or_404(Event, pk=event_id)
 
+        
+        
         # Update Event
         event.name = event_title
         event.event_type = event_type
         event.location = event_location
         event.description = event_description
+        event.discord_link = discord_link
 
-        # only update new dates/times
-        if event_start_date:
-            event.start_date = event_start_date
+        # handle start/end dt's
+        try:
+            start_date = Utility.toUTC(event_start_date, event_start_time, local_tz)
+            end_date = Utility.toUTC(event_end_date, event_end_time, local_tz)
+            
+            if start_date < datetime.now(pytz.utc):
+                # create response
+                response = {
+                    'status': 'fail',
+                    'error_msg': 'Start date needs to be in the future.'
+                }
+            elif start_date > end_date:
+                # create response
+                response = {
+                    'status': 'fail',
+                    'error_msg': 'End date/time has to come after start date/time.'
+                }
 
-        if event_end_date:
-            event.end_date = event_end_date
-
-        if event_start_time:
-            event.start_time = event_start_time
-
-        if event_end_time:
-            event.end_time = event_end_time
+            event.start_date = start_date
+            event.end_date = end_date
+        # if date was unaltered it came in as humanized string; pass
+        except ValueError:
+            pass
 
         # Save updated event
         event.save()
@@ -334,6 +381,10 @@ class EventViews:
             'platform'
         ))
 
+        # reformat start dates
+        for i in event_search_results[:10]:
+            i['start_date'] = i['start_date'].date()
+
         # create response
         response = {
             'status': 'success',
@@ -389,3 +440,42 @@ class Utility:
 
         return
 
+    def toUTC(date, time, local_tz):
+        # convert to localized dt obj
+        aware_local_dt = local_tz.localize(
+            datetime.strptime(
+                '{} {}'.format(date, time),
+                '%Y-%m-%d %H:%M'
+            )
+        )
+
+        # convert to utc dt obj
+        utc_dt = aware_local_dt.astimezone(pytz.utc)
+
+        return utc_dt
+
+    def toLocal(date, time, local_tz):
+        # convert utc dt obj
+        aware_utc_dt = pytz.utc.localize(
+            datetime.strptime(
+                '{} {}'.format(date, time),
+                '%Y-%m-%d %H:%M:%S'
+            )
+        )
+
+        # convert to local dt
+        local_dt = aware_utc_dt.astimezone(local_tz)
+
+        return local_dt
+
+
+class TimezoneMiddleware(MiddlewareMixin):
+
+
+    def process_request(self, request):
+        tzname = request.session.get('django_timezone')
+        if tzname:
+            timezone.activate(pytz.timezone(tzname))
+        else:
+            timezone.deactivate()
+    
