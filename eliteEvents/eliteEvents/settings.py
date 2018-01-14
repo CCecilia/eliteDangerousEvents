@@ -17,8 +17,13 @@ if django_secret_key:
 else:
     SECRET_KEY = random_key
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = google_oauth_key
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = google_oauth_secret
+if google_oauth_key and google_oauth_secret
+    SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = google_oauth_key
+    SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = google_oauth_secret
+else:
+    SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = ''
+    SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = ''
+
 
 
 
