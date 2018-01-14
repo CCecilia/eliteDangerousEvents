@@ -34,8 +34,7 @@ else:
 
 ALLOWED_HOSTS = [
     'localhost',
-    'elitedangerousevents.us-east-1.elasticbeanstalk.com',
-    'development'
+    'elitedangerousevents.us-east-1.elasticbeanstalk.com'
 ]
 
 
