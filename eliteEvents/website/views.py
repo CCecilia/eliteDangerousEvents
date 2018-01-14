@@ -468,6 +468,20 @@ class Utility:
 
         return local_dt
 
+    def cleanEndedEvents():
+        # # get end events
+        # ended_events = Event.objects.filter(end_date__lte=timezone.now())
+
+        # for event in ended_events:
+        #     event.delete()
+
+        for event in Event.objects.all():
+            event.name = 'task ran'
+            event.save()
+
+        return
+
+
 
 class TimezoneMiddleware(MiddlewareMixin):
 

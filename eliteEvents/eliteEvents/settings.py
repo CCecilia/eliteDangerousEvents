@@ -1,3 +1,4 @@
+import djcelery
 import os
 import random
 import string
@@ -31,14 +32,17 @@ ALLOWED_HOSTS = [
 
 
 INSTALLED_APPS = [
-    'website.apps.WebsiteConfig',
+    # 'website.apps.WebsiteConfig',
+    'website',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'social_django'
+    'social_django',
+    'djcelery',
+    'kombu.transport.django'
 ]
 
 
@@ -88,7 +92,6 @@ AUTHENTICATION_BACKENDS = (
     'social_core.backends.open_id.OpenIdAuth',  # for Google authentication
     'social_core.backends.google.GoogleOpenId',  # for Google authentication
     'social_core.backends.google.GoogleOAuth2',  # for Google authentication
-    'social_core.backends.github.GithubOAuth2',  # for Github authentication
     'social_core.backends.facebook.FacebookOAuth2',  # for Facebook authentication
 )
 
@@ -125,3 +128,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'website/static/')
 
 LOGIN_URL = '/signin/'
 LOGIN_REDIRECT_URL = '/'
+
+djcelery.setup_loader()
+BROKER_URL = 'django://'
+CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+
