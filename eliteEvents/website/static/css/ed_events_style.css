@@ -357,6 +357,10 @@ body {
   display: none;
 }
 
+.joined-events{
+  border-left:2px solid #c06400;
+}
+
 /* Affix and center */
 
 @media (min-width: 40em) {
@@ -410,6 +414,10 @@ body {
   .event-preview{
     font-size: .5em;
   }
+
+  .joined-events{
+    border-left:0px;
+  }
 }
 
 /* phone */
@@ -438,6 +446,10 @@ body {
 
   .mastfoot{
     font-size: .8em;
+  }
+
+  .joined-events{
+    border-left:0px;
   }
 }
 @media (max-width: 330px) {

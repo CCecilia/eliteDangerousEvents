@@ -42,7 +42,7 @@ class EventModelTests(TestCase):
             )
 
         # Create Events
-        for i in range(5):
+        for i in range(50):
             event_name = 'Test Event %s' % i
             Event.objects.create(
                 name=event_name,
@@ -57,6 +57,11 @@ class EventModelTests(TestCase):
                 description=lorem.paragraph(),
                 discord_link='https://discord.gg/MN8m55'
             )
+
+        # joined user 2 to all events
+        for event in Event.objects.all():
+            user = User.objects.get(pk=2)
+            event.attendees.add(user)
 
     def test_event_associated_to_auth_user(self):
         # check if event will return creator
@@ -77,31 +82,47 @@ class EventModelTests(TestCase):
 
     @tag('quick')
     def test_allEvents_view(self):
-        response = self.client.get(reverse('website:allEvents'))
+        response = self.c.get(reverse('website:allEvents'))
         # check reponse and template
         self.assertEqual(response.status_code, 200)
         # cehck all events are returned
-        self.assertTrue(len(response.context['events']) == 5)
+        self.assertTrue(len(response.context['events']) == 20)
+        self.assertTemplateUsed(response, 'html/allEvents.html')
+
+        # test second page
+        response = self.c.get('/allEvents/?page=2')
+        # check reponse and template
+        self.assertEqual(response.status_code, 200)
+        # cehck all events are returned
+        self.assertTrue(len(response.context['events']) == 20)
+        self.assertTemplateUsed(response, 'html/allEvents.html')
+
+        # test third page
+        response = self.c.get('/allEvents/?page=3')
+        # check reponse and template
+        self.assertEqual(response.status_code, 200)
+        # cehck all events are returned
+        self.assertTrue(len(response.context['events']) == 10)
         self.assertTemplateUsed(response, 'html/allEvents.html')
 
     def test_editEvent_view_redirect(self):
-        response = self.client.get(reverse('website:editEvent', kwargs={'event_id':1}))
+        response = self.c.get(reverse('website:editEvent', kwargs={'event_id':1}))
         
         # check reponse and template
         self.assertEqual(response.status_code, 302)
 
-    # def test_editEvent_view(self):
-    #     user = User.objects.get(pk=1)
-    #     self.c.force_login(user)
-    #     response = self.client.get(reverse('website:editEvent', kwargs={'event_id':1}))
+    def test_editEvent_view(self):
+        user = User.objects.get(pk=1)
+        self.c.force_login(user)
+        response = self.c.get(reverse('website:editEvent', kwargs={'event_id':1}))
         
-    #     # check reponse and template
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, 'html/editEvent.html')
+        # check reponse and template
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'html/editEvent.html')
 
-    #     # check correct event is returned
-    #     correct_event = Event.objects.get(pk=1)
-    #     self.assertEqual(response.context['event'], correct_event)
+        # check correct event is returned
+        correct_event = Event.objects.get(pk=1)
+        self.assertEqual(response.context['event'], correct_event)
 
     @tag('quick')
     def test_search_events(self):
@@ -114,13 +135,13 @@ class EventModelTests(TestCase):
         )
         event_search_results = json.loads(response.content)['event_search_results']
         # Check event objs are returned
-        self.assertEqual(len(event_search_results), 5)
+        self.assertEqual(len(event_search_results), 10)
         # check event objs have values
         for i in range(len(event_search_results)):
             self.assertFalse(event_search_results[i]['id'] == '')
             self.assertFalse(event_search_results[i]['name'] == '')
             self.assertFalse(event_search_results[i]['event_type'] == '')
-            self.assertEqual(event_search_results[i]['attendees'], None)
+            self.assertEqual(event_search_results[i]['attendees'], 2)
 
     @tag('quick')
     def test_event_details(self):
@@ -201,6 +222,52 @@ class EventModelTests(TestCase):
        
         self.assertEqual(response.status_code, 200)
 
+    @tag('quick')
+    def test_myEvents_redirect(self):
+        response = self.c.get(reverse('website:myEvents'))
+        # check reponse and template
+        self.assertEqual(response.status_code, 302)
+
+    @tag('quick')
+    def test_myEvents_redirect(self):
+        user_1 = User.objects.get(pk=1)
+        user_2 = User.objects.get(pk=2)
+
+        self.c.force_login(user_1)
+
+        response = self.c.get(reverse('website:myEvents'))
+        # check reponse and template
+        self.assertEqual(response.status_code, 200)
+        # # check all events are returned
+        self.assertTrue(len(response.context['created_events']) == 20)
+        self.assertTrue(len(response.context['joined_events']) == 0)
+        self.assertTemplateUsed(response, 'html/myEvents.html')
+
+        # test second page
+        response = self.c.get('/myEvents/?created_page=2')
+        # check reponse and template
+        self.assertEqual(response.status_code, 200)
+        # cehck all events are returned
+        self.assertTrue(len(response.context['created_events']) == 20)
+        self.assertEqual(len(response.context['joined_events']), 0)
+        self.assertTemplateUsed(response, 'html/myEvents.html')
+
+        # test joined events
+        self.c.force_login(user_2)
+
+        response = self.c.get(reverse('website:myEvents'))
+        # # check all events are returned
+        self.assertTrue(len(response.context['created_events']) == 0)
+        self.assertTrue(len(response.context['joined_events']) == 20)
+        self.assertTemplateUsed(response, 'html/myEvents.html')
+        self.c.force_login(user_2)
+
+        response = self.c.get('/myEvents/?joined_page=3')
+        # # check all events are returned
+        self.assertTrue(len(response.context['created_events']) == 0)
+        self.assertTrue(len(response.context['joined_events']) == 10)
+        self.assertTemplateUsed(response, 'html/myEvents.html')
+
 
 class RenderViewsTests(TestCase):
     c = Client()
@@ -216,34 +283,34 @@ class RenderViewsTests(TestCase):
 
     @tag('quick')
     def test_index_view(self):
-        response = self.client.get(reverse('website:index'))
+        response = self.c.get(reverse('website:index'))
         # check reponse and template
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'html/index.html')
 
     @tag('quick')
-    def test_createEvent_view(self):
+    def test_createEventPage_view(self):
         user = User.objects.get(pk=1)
         self.c.force_login(user)
 
-        response = self.client.get(reverse('website:createEvent'))
+        response = self.c.get(reverse('website:createEventPage'))
         
         # check reponse and template
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'html/createEvent.html')
 
-    def test_createEvent_view_redirect(self):
-        response = self.client.get(reverse('website:createEvent'))
+    def test_createEventPage_view_redirect(self):
+        response = self.c.get(reverse('website:createEventPage'))
         # check reponse and template
         self.assertEqual(response.status_code, 302)
 
     def test_allEvents_view(self):
-        response = self.client.get(reverse('website:myEvents'))
+        response = self.c.get(reverse('website:myEvents'))
         # check redirect for user not signed in
         self.assertEqual(response.status_code, 302)
 
     def test_signin_view(self):
-        response = self.client.get(reverse('website:signin'))
+        response = self.c.get(reverse('website:signin'))
         # check redirect for user not signed in
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'html/signin.html')

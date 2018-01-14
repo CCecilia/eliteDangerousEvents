@@ -3,59 +3,133 @@
 {% load staticfiles %}
           <main role="main" class="inner cover">
             <h1 class="cover-heading">{{ coverHeading }}</h1>
-            <div class="row event-search-results">
-                {% for event in events %}
-                    <div class="event-preview" data-id="{{ event.id }}">
-                        {% csrf_token %}
-                        {% if event.event_type == 'combat' %}
-                            <img class="event-type-img-sm" src="http://edassets.org/img/pilots-federation/combat/rank-9-combat.png" alt="Combat" data-type="combat"/>
-                        {% elif event.event_type == 'exploration' %}
-                            <img class="event-type-img-sm" src="http://edassets.org/img/pilots-federation/explorer/rank-9.png" alt="Combat" data-type="combat"/>
-                        {% else %}
-                            <img class="event-type-img-sm" src="http://edassets.org/img/pilots-federation/trading/rank-9-trading.png" alt="Combat" data-type="combat"/>
-                        {% endif %}
-                        <p>{{ event.name }}</p>
-                        <p>{{ event.start_date }}</p>
-                        <span>
-                            {% if event.platform == 'PC' %}
-                                <img class="event-platform-img-icon" src="{% static 'img/pc-icon.png' %}" alt="PC" data-type="PC"/>
-                            {% elif event.platform == 'XB' %}
-                                <img class="event-platform-img-icon" src="{% static 'img/xbox-icon-ed-org.png' %}" alt="XBox" data-type="XB"/>
-                            {% else %}
-                                <img class="event-platform-img-icon" src="{% static 'img/Playstation-icon.png' %}" alt="Playstation" data-type="PS"/>
-                            {% endif %}
-                        </span>
-                        <span>
-                            <i class="fa fa-users" aria-hidden="true"></i>
-                        </span>
-                        <span  class="attendee-count">
-                            {{ event.attendees.all.count }}
-                        </span>
-                    </div>
-                {% endfor %}
-            </div>
             <div class="row">
-                {% if events.has_other_pages %}
-                    <ul class="pagination">
-                        {% if events.has_previous %}
-                            <li><a href="?page={{ events.previous_page_number }}">&laquo;</a></li>
-                        {% else %}
-                            <li class="disabled"><span>&laquo;</span></li>
-                        {% endif %}
-                        {% for page_number in events.paginator.page_range %}
-                            {% if events.number == page_number %}
-                                <li class="active"><span>{{ page_number }} <span class="sr-only">(current)</span></span></li>
-                            {% else %}
-                                <li><a href="?page={{ page_number }}">{{ page_number }}</a></li>
+                <div class="col-sm-12 col-lg-6 created-events">
+                    <h2>Created Events <a href="{% url 'website:createEventPage' %}"><i class="fa fa-plus"></i></a></h2>
+                    {% if created_events %}
+                        <div class="row event-search-results">
+                            {% for event in created_events %}
+                                <div class="event-preview" data-id="{{ event.id }}">
+                                    {% csrf_token %}
+                                    {% if event.event_type == 'combat' %}
+                                        <img class="event-type-img-sm" src="http://edassets.org/img/pilots-federation/combat/rank-9-combat.png" alt="Combat" data-type="combat"/>
+                                    {% elif event.event_type == 'exploration' %}
+                                        <img class="event-type-img-sm" src="http://edassets.org/img/pilots-federation/explorer/rank-9.png" alt="Combat" data-type="combat"/>
+                                    {% else %}
+                                        <img class="event-type-img-sm" src="http://edassets.org/img/pilots-federation/trading/rank-9-trading.png" alt="Combat" data-type="combat"/>
+                                    {% endif %}
+                                    <p>{{ event.name|truncatechars:18 }}</p>
+                                    <p>{{ event.start_date }}</p>
+                                    <span>
+                                        {% if event.platform == 'PC' %}
+                                            <img class="event-platform-img-icon" src="{% static 'img/pc-icon.png' %}" alt="PC" data-type="PC"/>
+                                        {% elif event.platform == 'XB' %}
+                                            <img class="event-platform-img-icon" src="{% static 'img/xbox-icon-ed-org.png' %}" alt="XBox" data-type="XB"/>
+                                        {% else %}
+                                            <img class="event-platform-img-icon" src="{% static 'img/Playstation-icon.png' %}" alt="Playstation" data-type="PS"/>
+                                        {% endif %}
+                                    </span>
+                                    <span>
+                                        <i class="fa fa-users" aria-hidden="true"></i>
+                                    </span>
+                                    <span  class="attendee-count">
+                                        {{ event.attendees.all.count }}
+                                    </span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="row">
+                            {% if created_events.has_other_pages %}
+                                <ul class="pagination">
+                                    {% if created_events.has_previous %}
+                                        <li><a href="?created_page={{ created_events.previous_page_number }}">&laquo;</a></li>
+                                    {% else %}
+                                        <li class="disabled"><span>&laquo;</span></li>
+                                    {% endif %}
+                                    {% for page_number in created_events.paginator.page_range %}
+                                        {% if created_events.number == page_number %}
+                                            <li class="active"><span>{{ page_number }} <span class="sr-only">(current)</span></span></li>
+                                        {% else %}
+                                            <li><a href="?created_page={{ page_number }}">{{ page_number }}</a></li>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% if created_events.has_next %}
+                                        <li><a href="?created_page={{ created_events.next_page_number }}">&raquo;</a></li>
+                                    {% else %}
+                                        <li class="disabled"><span>&raquo;</span></li>
+                                    {% endif %}
+                                </ul>
                             {% endif %}
-                        {% endfor %}
-                        {% if events.has_next %}
-                            <li><a href="?page={{ events.next_page_number }}">&raquo;</a></li>
-                        {% else %}
-                            <li class="disabled"><span>&raquo;</span></li>
-                        {% endif %}
-                    </ul>
-                {% endif %}
+                        </div>
+                    {% else %}
+                        <p class="text center">
+                            No events created.
+                        </p>
+                    {% endif %}  
+                </div>
+                <div class="col-sm-12 col-lg-6 joined-events">
+                    <h2>Joined Events</h2>
+                    {% if joined_events %}
+                        <div class="row event-search-results">
+                            {% for event in joined_events %}
+                                <div class="event-preview" data-id="{{ event.id }}">
+                                    {% csrf_token %}
+                                    {% if event.event_type == 'combat' %}
+                                        <img class="event-type-img-sm" src="{% static 'img/rank-9-combat.png' %}" alt="Combat" data-type="combat"/>
+                                    {% elif event.event_type == 'exploration' %}
+                                        <img class="event-type-img-sm" src="{% static 'img/rank-9-exploration.png' %}" alt="Exploration" data-type="exploration"/>
+                                    {% else %}
+                                        <img class="event-type-img-sm" src="{% static 'img/rank-9-trading.png' %}" alt="Trading" data-type="trading"/>
+                                    {% endif %}
+                                    <p>{{ event.name|truncatechars:18 }}</p>
+                                    <p>{{ event.start_date }}</p>
+                                    <span>
+                                        {% if event.platform == 'PC' %}
+                                            <img class="event-platform-img-icon" src="{% static 'img/pc-icon.png' %}" alt="PC" data-type="PC"/>
+                                        {% elif event.platform == 'XB' %}
+                                            <img class="event-platform-img-icon" src="{% static 'img/xbox-icon-ed-org.png' %}" alt="XBox" data-type="XB"/>
+                                        {% else %}
+                                            <img class="event-platform-img-icon" src="{% static 'img/Playstation-icon.png' %}" alt="Playstation" data-type="PS"/>
+                                        {% endif %}
+                                    </span>
+                                    <span>
+                                        <i class="fa fa-users" aria-hidden="true"></i>
+                                    </span>
+                                    <span  class="attendee-count">
+                                        {{ event.attendees.all.count }}
+                                    </span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="row">
+                            {% if joined_events.has_other_pages %}
+                                <ul class="pagination">
+                                    {% if joined_events.has_previous %}
+                                        <li><a href="?joined_page={{ joined_events.previous_page_number }}">&laquo;</a></li>
+                                    {% else %}
+                                        <li class="disabled"><span>&laquo;</span></li>
+                                    {% endif %}
+                                    {% for page_number in joined_events.paginator.page_range %}
+                                        {% if joined_events.number == page_number %}
+                                            <li class="active"><span>{{ page_number }} <span class="sr-only">(current)</span></span></li>
+                                        {% else %}
+                                            <li><a href="?joined_page={{ page_number }}">{{ page_number }}</a></li>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% if joined_events.has_next %}
+                                        <li><a href="?joined_page={{ joined_events.next_page_number }}">&raquo;</a></li>
+                                    {% else %}
+                                        <li class="disabled"><span>&raquo;</span></li>
+                                    {% endif %}
+                                </ul>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <p class="text-center">
+                            Find an event to <a href="{% url 'website:allEvents' %}">join</a>.
+                        </p>
+                    {% endif %}  
+                </div>
             </div>
           </main>
 {% endblock %}

@@ -1,6 +1,4 @@
 __author__ = 'christian.cecilia1@gmail.com'
-
-
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -73,29 +71,42 @@ class HtmlRendering:
     def myEvents(request):
         # Dec  Vars
         user = request.user
-        page = request.GET.get('page')
+        created_page = request.GET.get('created_page')
+        joined_page = request.GET.get('joined_page')
 
         # redirect to signin page if user not found
         try:
-            events = Event.objects.filter(creator=user)
+            created_events = Event.objects.filter(creator=user).order_by('start_date')
+            joined_events = Event.objects.filter(attendees=user).order_by('start_date')
         except TypeError:
             return redirect('signin')
         
-        paginator = Paginator(events, 20)
+        created_paginator = Paginator(created_events, 20)
+        joined_paginator = Paginator(joined_events, 20)
 
         try:
-            events = paginator.page(page)
+            created_events = created_paginator.page(created_page)
         except PageNotAnInteger:
             # If page is not an integer, deliver first page.
-            events = paginator.page(1)
+            created_events = created_paginator.page(1)
         except EmptyPage:
             # If page is out of range (e.g. 9999), deliver last page of results.
-            events = paginator.page(paginator.num_pages)
+            created_events = created_paginator.page(created_paginator.num_pages)
+
+        try:
+            joined_events = joined_paginator.page(joined_page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            joined_events = joined_paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            joined_events = joined_paginator.page(joined_paginator.num_pages)
 
         context = {
             'page': 'myEvents',
             'coverHeading': 'My Events',
-            'events': events
+            'created_events': created_events,
+            'joined_events': joined_events
         }
         return render(request, 'html/myEvents.html', context)
 
@@ -211,7 +222,8 @@ class EventViews:
             start_time=event_start_time,
             end_date=event_end_date,
             end_time=event_end_time,
-            platform=event_platform
+            platform=event_platform,
+            discord_link=discord_link
         )
 
         # #create response
@@ -267,6 +279,7 @@ class EventViews:
         # send reponse JSON
         return JsonResponse(response)
 
+    @login_required
     def removeEvent(request):
         # dec vars
         event_id = json.loads(request.body)['event_id']

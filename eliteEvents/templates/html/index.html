@@ -21,7 +21,7 @@
                         {% else %}
                             <img class="event-type-img-sm" src="{% static 'img/rank-9-trading.png' %}" alt="Trading" data-type="trading"/>
                         {% endif %}
-                        <p>{{ event.name }}</p>
+                        <p>{{ event.name|truncatechars:18 }}</p>
                         <p>{{ event.start_date }}</p>
                         <span>
                             {% if event.platform == 'PC' %}
