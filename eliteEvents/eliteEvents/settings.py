@@ -25,9 +25,17 @@ else:
     SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = ''
     SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = ''
 
+if facebook_oauth_key and facebook_oauth_secret:
+    SOCIAL_AUTH_FACEBOOK_KEY = facebook_oauth_key
+    SOCIAL_AUTH_FACEBOOK_SECRET = facebook_oauth_secret
+else:
+    SOCIAL_AUTH_FACEBOOK_KEY = ''
+    SOCIAL_AUTH_FACEBOOK_SECRET = ''
+
 ALLOWED_HOSTS = [
     'localhost',
-    'elitedangerousevents.us-east-1.elasticbeanstalk.com'
+    'elitedangerousevents.us-east-1.elasticbeanstalk.com',
+    'development'
 ]
 
 

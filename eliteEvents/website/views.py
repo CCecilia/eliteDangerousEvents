@@ -202,7 +202,7 @@ class UserViews:
         logout(request)
 
         # send to home page
-        return redirect('index')
+        return redirect(HtmlRendering.index)
 
     def setUserTz(request):
         request.session['django_timezone'] = request.POST['timezone']
