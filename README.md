@@ -59,6 +59,8 @@ secret.py
 google_oauth_key = GOOGLE API SECRET
 google_oauth_secret = GOOGLE API ID
 django_secret_key = YOUR DJANGO SECRET KEY
+facebook_oauth_key = FB App ID
+facebook_oauth_secret = FB App Secret key
 ```
 
 Start your local server
