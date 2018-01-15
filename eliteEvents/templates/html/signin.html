@@ -18,9 +18,9 @@
                   <a class="google-signin-btn" href="{% url 'social:begin' 'google-oauth2' %}">
                         <img src="{% static 'img/google-signin-btn.png' %}" width="12%" height="auto"/>
                   </a> 
-                  <a class="facebook-signin-btn" href="{% url 'social:begin' 'facebook' %}">
+                  <!-- <a class="facebook-signin-btn" href="{% url 'social:begin' 'facebook' %}">
                         Facebook
-                  </a> 
+                  </a> -->
             </form>
             <form  class="register-form" name="register-form" action="/register/" method="post">
             	{% csrf_token %}
