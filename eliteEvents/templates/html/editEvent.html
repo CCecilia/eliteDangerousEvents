@@ -56,7 +56,7 @@
 	            <input type="hidden" name="event-type" value="{{ event.event_type }}"/>
 	            <input type="hidden" name="platform-type" value="{{ event.platform }}"/>
 	            <h2 class="event-label cover-heading">Event Location</h2>
-	            <input class="event-location" name="event-location" placeholder="Event Location" type="text" value="{{ event.location }}"><span><i class="fa fa-search location-search-icon"></i></span>
+	            <input class="event-location" name="event-location" placeholder="Event Location" type="text" value="{{ event.location }}"  autocomplete="off">
 	            <div class="location-results-wrapper">
 	            	<table id="location-results-table"></table>
 	            </div>

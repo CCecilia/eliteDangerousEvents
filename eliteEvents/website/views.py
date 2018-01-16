@@ -13,7 +13,7 @@ import ijson
 import json
 import os
 import pytz
-from .models import Event, SolarSystem
+from .models import Event, SolarSystem, LFGPost
 
 
 class HtmlRendering:
@@ -72,6 +72,16 @@ class HtmlRendering:
         }
 
         return render(request, 'html/allEvents.html', context)
+
+    def lfgPage(request):
+        posts = LFGPost.objects.all()
+
+        context = {
+            'page': 'lfg',
+            'coverHeading': 'LFG',
+            'posts': posts
+        }
+        return render(request, 'html/lfgPage.html', context)
 
     @login_required
     def myEvents(request):
@@ -409,6 +419,31 @@ class EventViews:
         }
 
         # send reponse JSON
+        return JsonResponse(response)
+
+
+class LFGViews:
+    def createLfgPost(request):
+        group_type = request.POST['event-type']
+        platform_type = request.POST['platform-type']
+        commander_name = request.POST['commander-name']
+        discord_link = request.POST['lfg-discord-link']
+        location = request.POST['lfg-location']
+
+        if not location:
+            location = 'Not given'
+
+        LFGPost.objects.create(
+            platform=platform_type,
+            post_type=group_type,
+            discord_link=discord_link,
+            commander=commander_name,
+            location=location
+        )
+
+        response = {
+            'status': 'success'
+        }
         return JsonResponse(response)
 
 

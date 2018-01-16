@@ -19,7 +19,8 @@
     <link href="{% static 'css/ed_events_style.css' %}" rel="stylesheet"/>
   </head>
   <body>
-
+    <!-- csrf token for set timezone -->
+    {% csrf_token %}
     <div class="site-wrapper">
 
       <div class="site-wrapper-inner">
@@ -33,7 +34,7 @@
                 <a class="nav-link {% if page == 'index' %}active{% endif %}" href="{% url 'website:index' %}">Home</a>
                 <a class="nav-link {% if page == 'allEvents' %}active{% endif %}" href="{% url 'website:allEvents' %}">All Events</a>
                 {% if user.is_authenticated %}
-                  <!-- <a class="nav-link {% if page == 'createEvent' %}active{% endif %}" href="/createEvent/" >Create Event</a> -->
+                  <a class="nav-link {% if page == 'lfg' %}active{% endif %}" href="{% url 'website:lfgPage' %}" >LFG</a>
                   
                   <a class="nav-link {% if page == 'myEvents' %}active{% endif %}" href="{% url 'website:myEvents' %}" >My Events</a>
                   <a class="nav-link" href="/logout/">Log out</a>
@@ -53,6 +54,15 @@
                 <a class="footer-link" href="https://github.com/CCecilia/eliteDangerousEvents" target="_blank">view source code</a>
               </p>
               <p>
+              <p>
+                <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+                  <input type="hidden" name="cmd" value="_s-xclick">
+                  <input type="hidden" name="hosted_button_id" value="947LAS6JT3JX4">
+                  <!-- <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"> -->
+                  <input type="image" src="{% static 'img/paypal-donate-btn.png' %}" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!" width="15%" height="auto" style="cursor:pointer;">
+                  <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+                </form>
+              </p>
               <p class="footer-disclaimer">
                 This website was created using assets and imagery from Elite Dangerous and <a class="footer-link" href="http://edassets.org/" target="_blank">Elite Dangerous Assests</a> for non-commercial purposes. It is not endorsed by nor reflects the views or opinions of Frontier Developments and no employee of Frontier Developments was involved in the making of it.
               </p>

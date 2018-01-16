@@ -1,0 +1,115 @@
+{% extends "html/base.html" %}
+{% block content %}
+{% load staticfiles %}
+	<main role="main" class="inner cover">
+		<h1 class="cover-heading">{{ coverHeading }}</h1>
+    	<form class="lfg-post-form" name="lfg-post-form" method="POST" action="{% url 'website:createLfgPost' %}">
+    		<div class="row lfg-post-form-open-close-wrap">
+    			<div class="col-sm-6 text-left">Create Post</div> 
+    			<div class="col-sm-6 text-right"><i class="fa fa-chevron-down toggle-lfg-post"></i></div> 
+    		</div>
+    		<div class="lfg-form-wrap">
+				<div class="row">
+			    	<div class="col-sm-6">
+			    		<h3>Event Type</h3>
+			            <ul class="event-type-list">
+			            	<li>
+			            		<img class="event-type-img" src="{% static 'img/rank-9-combat.png' %}" alt="Combat" data-type="combat"/><br>
+			            		Combat
+			            	</li>
+			            	<li>
+			            		<img class="event-type-img" src="{% static 'img/rank-9-exploration.png' %}" alt="Exploration" data-type="exploration"/><br>
+			            		Exploration
+			            	</li>
+			            	<li>
+			            		<img class="event-type-img" src="{% static 'img/rank-9-trading.png' %}" alt="Trading" data-type="trading"/><br>
+			            		Trading
+			            	</li>
+			            </ul>
+			            <input type="hidden" name="event-type"/>
+			    	</div>
+			    	<div class="col-sm-6">
+			    		<h3>Platform</h3>
+			    		<ul class="platform-type-list">
+			            	<li>
+			            		<img class="platform-type-img" src="{% static 'img/xbox-icon-ed-org.png' %}" alt="XBox" data-type="XB"/><br>
+			            		XBox 
+			            	</li>
+			            	<li>
+			            		<img class="platform-type-img" src="{% static 'img/Playstation-icon.png' %}" alt="Playstation" data-type="PS"/><br>
+			            		Playstation
+			            	</li>
+			            	<li>
+			            		<img class="platform-type-img" src="{% static 'img/pc-icon.png' %}" alt="PC" data-type="PC"/><br>
+			            		PC
+			            	</li>
+			            </ul>
+			            <input type="hidden" name="platform-type"/>
+			    	</div>
+		    	</div>
+		    	<hr>
+		    	<div class="row">
+		    		<div class="col-sm-6 col-md-4">
+		    			<label class="lfg-label"for="commander-name">Commander Name</label>
+		    			<input class="lfg-input" name="commander-name" placeholder="Commander Name"/>
+		    		</div>
+		    		<div class="col-sm-6 col-md-4">
+		    			<label for="lfg-activity">Discord Server</label>
+		    			<br>
+		            	<input class="discord-input" name="lfg-discord-link" placeholder="Discord Server Link" type="text">
+		    		</div>
+		    		<div class="col-sm-6 col-md-4">
+		    			<label for="lfg-activity">Location</label>
+		    			<br>
+			            <input class="event-location" name="lfg-location" placeholder="Location" type="text"  autocomplete="off">
+			            <div class="location-results-wrapper">
+			            	<table id="location-results-table"></table>
+			            </div>
+		    		</div>
+		    	</div>
+		    	<div class="row">
+		    		{% csrf_token %}
+		    		<button class="btn create-lfg-post">Create</button>
+		    		}
+		    	</div>
+	    	</div>
+	    </form>
+		<div class="row lfg-post-table-wrap">
+			<table>
+				<tr>
+				    <th>Type</th>
+				    <th>Platform</th>
+				    <th>Commander</th>
+				    <th>Discord</th>
+				    <th>Location</th>
+			  	</tr>
+			  	{% for post in posts %}
+			  		<tr>
+			  			<th style="width: 15%;">
+			  				{% if post.group_type == 'combat' %}
+			  					<img class="event-type-img-sm" src="{% static 'img/rank-9-combat.png' %}" alt="Combat" data-type="combat"/>
+			  				{% elif post.group_type == 'exploration' %}
+			  					<img class="event-type-img-sm" src="{% static 'img/rank-9-exploration.png' %}" alt="Exploration" data-type="exploration"/>
+		  					{% else %}
+		  						<img class="event-type-img-sm" src="{% static 'img/rank-9-trading.png' %}" alt="Trading" data-type="trading"/>
+	  						{% endif %}
+			  			</th>
+			  			<th  style="width: 15%;">
+			  				{% if event.platform == 'XB' %}
+			  					<img class="event-platform-img-icon" src="{% static 'img/xbox-icon-ed-org.png' %}" alt="XBox" data-type="XB"/>
+			  				{% elif event.platform == 'PS' %}
+			  					<img class="event-platform-img-icon" src="{% static 'img/Playstation-icon.png' %}" alt="Playstation" data-type="PS"/>
+		  					{% else %}
+		  						<img class="event-platform-img-icon" src="{% static 'img/pc-icon.png' %}" alt="PC" data-type="PC"/>
+	  						{% endif %}
+			  			</th>
+					    <th>{{ post.commander }}</th>
+					    <th>{% if post.discord_link %}{{ post.discord_link }}{% else %}Not Given{% endif %}</th>
+					    <th>{% if post.location %}{{ post.location }}{% else %}Not Given{% endif %}</th>
+			  		</tr>
+			  	{% endfor %}
+			</table>
+		</div>
+		    
+    </main>
+{% endblock %}

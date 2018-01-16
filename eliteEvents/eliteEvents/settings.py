@@ -135,6 +135,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'website/static/')
 LOGIN_URL = '/signin/'
 LOGIN_REDIRECT_URL = '/'
 
+# Celery settings
 # djcelery.setup_loader()
 # BROKER_URL = 'django://'
 # CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'

@@ -269,25 +269,22 @@ $(document).ready(function(){
 
 
     //Event location search
-    $(".location-search-icon").click(function(e) {
+    $("input[name='event-location'],input[name='lfg-location']").keyup(function(e) {
         // get system query
-    	let system_query = $("input[name='event-location']").val();
+    	let system_query = $(this).val();
         
     	if(system_query.length > 2){
             // clear out table
     		$("#location-results-table").empty();
 
-            // add loading animation 
-            $(this).addClass('fa-pulse');
-
             $.ajax({
                 type: "POST",
-                url: '/search/systems/',
+                url: "/search/systems/",
                 data: JSON.stringify({system_query: system_query}), 
                 success: function(data){
                     console.log(data);
                     // stop loading animation
-                    $(".location-search-icon").removeClass('fa-pulse');
+                    $(".location-search-icon").removeClass("fa-pulse");
                     for ( i = 0; i < data.results.length; i++ ) { 
                         // create rows for slection table of top 5 results
                         result_html = '' +
@@ -305,10 +302,8 @@ $(document).ready(function(){
 
                 },
                 fail: function(data){
-                    // stop loading animation
-                    $(".location-search-icon").removeClass('fa-pulse');
                     // alert user of error
-                    alert('unknown server error occurred');
+                    alert("unknown server error occurred");
                 }
             });
     	}
@@ -316,7 +311,7 @@ $(document).ready(function(){
 
 
     //add location result to location
-    $('#location-results-table').on('click', '.location-result', function() {
+    $('#location-results-table').on("click", ".location-result", function() {
         console.log('test');
         //dec event id
         let result = $(this).text();
@@ -326,6 +321,7 @@ $(document).ready(function(){
 
         //fill location with result
         $("input[name='event-location']").val(result);
+        $("input[name='lfg-location']").val(result);
     });
 
 
@@ -477,7 +473,7 @@ $(document).ready(function(){
 
 
     //Show detail popup for event 
-	$('.event-search-results').on('click', '.event-preview', function() {
+	$(".event-search-results").on("click", ".event-preview", function() {
 		//dec event id
 	    let event_id = $(this).attr('data-id');
 
@@ -485,7 +481,7 @@ $(document).ready(function(){
 	});
 
     //
-    $('.featured-event-preview').click(function(e) {
+    $(".featured-event-preview").click(function(e) {
         //dec event id
         let event_id = $(this).attr('data-id');
 
@@ -494,7 +490,7 @@ $(document).ready(function(){
 
 
     //hide popups
-	$('.cover-container, .remove-event-no').click(function(e) {
+	$(".cover-container, .remove-event-no").click(function(e) {
 		$('#event-details-popup').hide();
 		$("#confirm-removal-popup").hide();
 	});
@@ -521,7 +517,7 @@ $(document).ready(function(){
 
 
     //edit event page change
-	$('.edit-event').click(function(e) {
+	$(".edit-event").click(function(e) {
 		let event_id = $('input[name="event-id"]').val();
 		//navigate to edit page
 		document.location.href = '/event/edit/'+event_id+'/';
@@ -542,6 +538,9 @@ $(document).ready(function(){
 
 	//Event edit
     $("form[name='event-edit-form']").submit(function(e) {
+        //Stop html form submission
+        e.preventDefault();
+
     	//get form inputs
     	let event_title = $("input[name='event-title']");
         let event_type = $("input[name='event-type']");
@@ -604,10 +603,7 @@ $(document).ready(function(){
                 alert('unknown server error occurred');
             }
                 
-        });
-
-        //Stop html form submission
-        e.preventDefault(); 
+        });        
     });
 
 
@@ -649,6 +645,63 @@ $(document).ready(function(){
     //show signin popup
     $(".show-signin-required-popup, .hide-signin-required-popup").click(function(e) {
         $('#signin-required-popup').toggle()      
+    });
+
+
+    //toggle lfg post form
+    $(".toggle-lfg-post").click(function(e){
+        $(this).toggleClass('fa-chevron-down');
+        $(this).toggleClass('fa-chevron-up');
+        $('.lfg-form-wrap').slideToggle();
+    });
+
+
+    //lfg create
+    $("form[name='lfg-post-form']").submit(function(e){
+        //Stop html form submission
+        e.preventDefault();
+
+        // check form inputs
+        let group_type = $("input[name='event-type']");
+        let platform_type = $("input[name='platform-type']");
+        let commander_name = $("input[name='commander-name']");
+
+        if( !group_type.val() ){
+            //send user alert 
+            alert('please select an event type\ncombat, exploration, trading');
+            return false
+        }else if( !platform_type.val() ){
+            //send user alert 
+            alert('please select an event platform\nXbox, Playstation, Pc');
+            return false
+        }else if( !commander_name.val() ){
+            //add border
+            commander_name.css('border','1px solid red').focus();
+            //reset input 
+            setTimeout(function resetInput() {
+                commander_name.css("border","1px solid #c06400;");
+            }, 3000);
+            return false
+        }
+
+        // serialize and submit edit form
+        $.ajax({
+            type: "POST",
+            url: $(this).attr('action'),
+            data: $(this).serialize(), 
+            success: function(data){
+                if( data.status === 'success'){
+                    //refresh screen
+                    window.location.reload();
+                }else{
+                    alert(data.error_msg);
+                }   
+            },
+            fail: function(data){
+                alert('unknown server error occurred');
+            }
+                
+        });
     });
 
 });

@@ -11,6 +11,7 @@ urlpatterns = [
     path('allEvents/', views.HtmlRendering.allEvents, name='allEvents'),
     path('myEvents/', views.HtmlRendering.myEvents, name='myEvents'),
     path('event/edit/<int:event_id>/', views.HtmlRendering.editEvent, name='editEvent'),
+    path('lfg/', views.HtmlRendering.lfgPage, name='lfgPage'),
     path('register/', views.UserViews.register, name='register'),
     path('login/', views.UserViews.loginUser, name='loginUser'),
     path('logout/', views.UserViews.logoutUser, name='logoutUser'),
@@ -21,5 +22,6 @@ urlpatterns = [
     path('event/search/', views.EventViews.searchEvents, name='searchEvents'),
     path('event/details/', views.EventViews.eventDetails, name='eventDetails'),
     path('event/join/', views.EventViews.eventJoin, name='eventJoin'),
+    path('lfg/create/', views.LFGViews.createLfgPost, name='createLfgPost'),
     path('search/systems/', views.Utility.searchSystems, name='searchSystems')
 ]

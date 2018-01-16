@@ -347,9 +347,15 @@ class RenderViewsTests(TestCase):
 
     def test_signin_view(self):
         response = self.c.get(reverse('website:signin'))
-        # check redirect for user not signed in
+        # check reponse and template
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'html/signin.html')
+
+    def test_lfgPage_view(self):
+        response = self.c.get(reverse('website:lfgPage'))
+        # check reponse and template
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'html/lfgPage.html')
 
 
 class AjaxViewsTests(TestCase):
