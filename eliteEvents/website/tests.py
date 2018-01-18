@@ -8,7 +8,7 @@ import json
 import lorem
 import pytz
 
-from .models import Event, SolarSystem
+from .models import Event, SolarSystem, LFGPost
 
 
 class EventModelTests(TestCase):
@@ -443,3 +443,58 @@ class AjaxViewsTests(TestCase):
         
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(results), 5)
+
+
+class LFGPostModelTests(TestCase):
+    c = Client()
+
+    @classmethod
+    def setUpTestData(self):
+        for i in range(50):
+            LFGPost.objects.create(
+                platform='XB',
+                post_type='combat',
+                discord_link='https://www.discord.com/34r34f',
+                commander='cmdr test{}'.format(i),
+                location='Shinrart Dezrah',
+                ship='Imperial Cutter',
+                rank='Deadly',
+                message=lorem.paragraph()
+            )
+
+    @tag('quick')
+    def test_lfgPage_view(self):
+        response = self.c.get(reverse('website:lfgPage'))
+        posts = LFGPost.objects.all().order_by('-id')
+        last_id = posts[0].id
+
+        # check reponse and template
+        self.assertTrue(len(response.context['posts']) == 50)
+        self.assertTrue(response.context['last_id'] == last_id)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'html/lfgPage.html')
+
+    def test_create_lfg_post(self):
+        response = self.c.post(reverse('website:createLfgPost'), {
+            'lfg-type': 'combat',
+            'platform-type': 'PC',
+            'commander-name': 'test commannder',
+            'lfg-discord-link': '',
+            'lfg-location': 'Merope',
+            'ship': 'Federal Dropship',
+            'rank': 'Deadly',
+            'lfg-message': 'testing test'
+        })
+        self.assertEqual(json.loads(response.content)['status'], 'success')
+
+    def test_check_for_new(self):
+        response = self.c.post(
+            reverse('website:checkForNew'), 
+            json.dumps({'last_id': 48,}),
+            'json',
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest',
+        )
+        
+        self.assertEqual(len(json.loads(response.content)['new_posts']), 2)
+        self.assertEqual(json.loads(response.content)['status'], 'success')
+

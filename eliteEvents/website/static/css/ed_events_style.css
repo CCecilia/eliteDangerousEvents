@@ -31,7 +31,7 @@ body {
   scrollbar-base-color: black; 
   scrollbar-arrow-color: black;
   scrollbar-DarkShadow-Color: black; 
-  color: #c06400;
+  color: #ff7100;
   text-align: center;
   text-shadow: 0 .05rem .1rem rgba(0,0,0,.5);
 }
@@ -94,8 +94,8 @@ body {
 }
 
 .nav-masthead .active {
-  color: #c06400;
-  border-bottom-color: #c06400;
+  color: #ff7100;
+  border-bottom-color: #ff7100;
 }
 
 @media (min-width: 48em) {
@@ -124,8 +124,8 @@ body {
   height: 2.3em;
   margin: 2% 0;
   background-color: #333;
-  color: #c06400;
-  border-color:  #c06400;
+  color: #ff7100;
+  border-color:  #ff7100;
 }
 .discord-input{
   border-color: #7289DA;
@@ -134,28 +134,28 @@ body {
 .event-option, .remove-event-yes, .event-share-option,
 .remove-event-no, .create-lfg-post{
   background-color:  transparent;
-  color: #c06400;
-  border-color:  #c06400;
+  color: #ff7100;
+  border-color:  #ff7100;
 }
 .event-search-btn:hover, .signin-btn:hover, .register-btn:hover,
 .event-create-btn:hover, .event-option:hover, .event-share-option:hover,
  .remove-event-yes:hover, .remove-event-no:hover, .create-lfg-post:hover{
   color: #FFF;
-  border-color:  #c06400;
-  background-color:  #c06400;
+  border-color:  #ff7100;
+  background-color:  #ff7100;
 }
 
 
 /* Footer */
 
 .mastfoot {
-  color: #c06400;
+  color: #ff7100;
 }
 
 .footer-link, .footer-link:hover, .footer-link:visited,
 .google-sign-btn, .google-sign-btn:visited{
   text-decoration: none;
-  color: #c06400;
+  color: #ff7100;
 }
 
 .google-sign-btn:hover{
@@ -166,7 +166,7 @@ body {
 .footer-disclaimer{
   padding: 0 25%;
   font-size: .8em;
-  color: #c06400;
+  color: #ff7100;
 }
 
 /* Signin */
@@ -177,7 +177,7 @@ body {
 
 .active-signin{
   text-decoration: underline;
-  color: #c06400;
+  color: #ff7100;
 }
 
 .signin-form, .register-form{
@@ -201,7 +201,7 @@ body {
 
 /* Create Event */
 .event-type-list, .platform-type-list, 
-.event-icons-list{
+.event-icons-list, .lfg-type-list{
   list-decoration: none;
   margin: 0;
   padding: 0;
@@ -209,13 +209,14 @@ body {
 }
 
 .event-type-list li, .platform-type-list li,
-.event-icons-list li{
+.event-icons-list li, .lfg-type-list li{
   display: inline-block;
   width:20%;
   
 }
 
-.event-type-img, .platform-type-img{
+.event-type-img, .platform-type-img,
+.lfg-type-img{
   width: 35%;
   height: auto;
   cursor: pointer;
@@ -236,8 +237,9 @@ body {
   padding: 5%;
 }
 
-.event-type-selected, .platform-type-selected{
-  border: 2px solid  #c06400;
+.event-type-selected, .platform-type-selected,
+.lfg-type-selected{
+  border: 2px solid  #ff7100;
    border-radius: 30%;
 }
 
@@ -247,13 +249,13 @@ body {
 
 .location-search-icon{
   padding: .5em;
-  border: 1px solid #c06400;
+  border: 1px solid #ff7100;
   cursor: pointer;
 }
 
 .location-search-icon:hover, #location-results-table tr:hover{
   color: #FFF;
-  background-color: #c06400;
+  background-color: #ff7100;
 }
 
 .event-location{
@@ -271,7 +273,7 @@ body {
 }
 
 #location-results-table tr{
-  border: 1px solid #c06400;
+  border: 1px solid #ff7100;
   cursor: pointer;
 }
 
@@ -281,24 +283,24 @@ body {
 
 .pagination li{
   padding: 1.5em;
-  color: #c06400;
-  border: 1px solid  #c06400;
+  color: #ff7100;
+  border: 1px solid  #ff7100;
 }
 
 .pagination li a{
-  color: #c06400;
+  color: #ff7100;
   text-decoration: none;
 }
 
 .pagination .active{
-  background-color: #c06400;
+  background-color: #ff7100;
   color: #FFF;
 }
 
 .event-description{
   background-color: #333;;
-  color: #c06400;
-  border-color:  #c06400;
+  color: #ff7100;
+  border-color:  #ff7100;
 }
 
 .event-create-btn{
@@ -311,14 +313,14 @@ body {
   height: 2.3em;
   margin: 2% 0;
   background-color: #333;
-  color: #c06400;
-  border-color:  #c06400;
+  color: #ff7100;
+  border-color:  #ff7100;
 }
 
 .event-preview, .featured-event-preview{
   width: 22%;
   margin: 1%;
-  border: 2px solid  #c06400;
+  border: 2px solid  #ff7100;
   border-radius: 30%;
   cursor: pointer;
 }
@@ -328,7 +330,7 @@ body {
   height: 75%;
   padding: 5%;
   overflow: scroll;
-  border: 2px solid  #c06400;
+  border: 2px solid  #ff7100;
   border-radius: 30%;
   background: #333;
   position: fixed; 
@@ -344,7 +346,7 @@ body {
   width: 25%;
   padding: 3%;
   overflow: scroll;
-  border: 2px solid  #c06400;
+  border: 2px solid  #ff7100;
   border-radius: 30%;
   background: #333;
   position: absolute; 
@@ -358,23 +360,27 @@ body {
 }
 
 .joined-events{
-  border-left:2px solid #c06400;
+  border-left:2px solid #ff7100;
 }
 
 
 /* LFG Page */
-.lfg-activity-dropdown{
+.toggle-lfg-post{
+  cursor: pointer;
+}
+.lfg-dropdown{
   width: 100%;
   margin-top: 2%;
   background-color: #333;
-  color: #c06400;
-  border: 1px solid #c06400;
+  color: #ff7100;
+  border: 1px solid #ff7100;
   margin-top: 
 }
 .lfg-post-form{
   padding: 2% 0;
-  border-top: 2px solid #c06400;
-  border-bottom: 2px solid #c06400;
+  margin-bottom: 3%;
+  border-top: 2px solid #ff7100;
+  border-bottom: 2px solid #ff7100;
 }
 .lfg-post-form-open-close-wrap{
   padding: 0 5%;
@@ -383,20 +389,30 @@ body {
   margin: 2% auto;
 }
 
-table {
-    font-family: arial, sans-serif;
-    border-collapse: collapse;
-    width: 100%;
+.lfg-message{
+  width:100%;
+  background-color: #333;;
+  color: #ff7100;
+  border-color:  #ff7100;
 }
 
-td, th {
-    border: 1px solid #dddddd;
-    text-align: center;
-    padding: 8px;
+.post-wrap{
+  width: 98%;
+  margin: 0 auto;
+  border-top: 2px solid #ff7100;
+  border-bottom: 2px solid #ff7100;
 }
 
-tr:nth-child(even) {
-    background-color: #dddddd;
+.center-vert{
+  margin-top: 50%;
+}
+
+.center-hor{
+  margin: 0 auto;
+}
+
+#exploration-rank-dropdown, #trade-rank-dropdown{
+  display: none;
 }
 /* Affix and center */
 

@@ -48,13 +48,10 @@
             <footer class="mastfoot">
             <div class="inner">
               <p>
-                <a class="footer-link" href="mailto:christian.cecilia1@gmail.com?Subject=Elite%20Dangerous%20Events">Created by CMDR Doughboy856</a>
+                Created by CMDR<a class="footer-link" href="mailto:christian.cecilia1@gmail.com?Subject=Elite%20Dangerous%20Events"> Doughboy856</a><br> with <del>love</del> lasers
               </p>
               <p>
-                <a class="footer-link" href="https://github.com/CCecilia/eliteDangerousEvents" target="_blank">view source code</a>
-              </p>
-              <p>
-              <p>
+                <p>Servers Cost please</p>
                 <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
                   <input type="hidden" name="cmd" value="_s-xclick">
                   <input type="hidden" name="hosted_button_id" value="947LAS6JT3JX4">
@@ -62,6 +59,9 @@
                   <input type="image" src="{% static 'img/paypal-donate-btn.png' %}" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!" width="15%" height="auto" style="cursor:pointer;">
                   <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
                 </form>
+              </p>
+              <p>
+                <a class="footer-link" href="https://github.com/CCecilia/eliteDangerousEvents" target="_blank">view source code</a>
               </p>
               <p class="footer-disclaimer">
                 This website was created using assets and imagery from Elite Dangerous and <a class="footer-link" href="http://edassets.org/" target="_blank">Elite Dangerous Assests</a> for non-commercial purposes. It is not endorsed by nor reflects the views or opinions of Frontier Developments and no employee of Frontier Developments was involved in the making of it.
@@ -153,5 +153,6 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
     <!-- ED Events JS -->
     <script type="text/javascript" src="{% static 'js/ed_events_scripts.js' %}"></script>
+    {% if page == 'lfg' %}<script type="text/javascript" src="{% static 'js/lfg_autoupdate.js' %}"></script>{% endif %}
   </body>
 </html>

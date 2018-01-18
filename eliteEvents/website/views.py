@@ -1,5 +1,5 @@
 __author__ = 'christian.cecilia1@gmail.com'
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -11,6 +11,7 @@ from django.utils import timezone
 from django.utils.deprecation import MiddlewareMixin
 import ijson
 import json
+import lorem
 import os
 import pytz
 from .models import Event, SolarSystem, LFGPost
@@ -46,40 +47,69 @@ class HtmlRendering:
     def allEvents(request):
         # Get Events
         events = Event.objects.all().order_by('start_date')
+        page = request.GET.get('page')
 
         try:
-            # filter out users own events if logged
+            # filter out users own events if logged in
             events = events.exclude(creator=request.user)
         except TypeError:
             pass
-
-        page = request.GET.get('page')
+        
         paginator = Paginator(events, 20)
 
         try:
             events = paginator.page(page)
         except PageNotAnInteger:
-            # If page is not an integer, deliver first page.
+            
             events = paginator.page(1)
         except EmptyPage:
-            # If page is out of range (e.g. 9999), deliver last page of results.
+            
             events = paginator.page(paginator.num_pages)
+
+        index = events.number - 1
+        max_index = len(paginator.page_range)
+        start_index = index - 3 if index >= 3 else 0
+        end_index = index + 3 if index <= max_index - 3 else max_index
+        page_range = list(paginator.page_range)[start_index:end_index]
 
         context = {
             'page': 'allEvents',
             'coverHeading': 'All Events',
-            'events': events
+            'events': events,
+            'page_range': page_range
         }
 
         return render(request, 'html/allEvents.html', context)
 
     def lfgPage(request):
-        posts = LFGPost.objects.all()
+        page = request.GET.get('page')
+        Utility.cleanOldLfgPosts()
+        posts = LFGPost.objects.all().order_by('-id')
+        paginator = Paginator(posts, 100)
+
+        if posts:
+            last_id = posts[0].id
+        else:
+            last_id = 0
+        try:
+            posts = paginator.page(page)
+        except PageNotAnInteger:
+            posts = paginator.page(1)
+        except EmptyPage:
+            posts = paginator.page(paginator.num_pages)
+
+        index = posts.number - 1 
+        max_index = len(paginator.page_range)
+        start_index = index - 3 if index >= 3 else 0
+        end_index = index + 3 if index <= max_index - 3 else max_index
+        page_range = list(paginator.page_range)[start_index:end_index]
 
         context = {
             'page': 'lfg',
             'coverHeading': 'LFG',
-            'posts': posts
+            'posts': posts,
+            'page_range': page_range,
+            'last_id': last_id
         }
         return render(request, 'html/lfgPage.html', context)
 
@@ -103,19 +133,19 @@ class HtmlRendering:
         try:
             created_events = created_paginator.page(created_page)
         except PageNotAnInteger:
-            # If page is not an integer, deliver first page.
+            
             created_events = created_paginator.page(1)
         except EmptyPage:
-            # If page is out of range (e.g. 9999), deliver last page of results.
+            
             created_events = created_paginator.page(created_paginator.num_pages)
 
         try:
             joined_events = joined_paginator.page(joined_page)
         except PageNotAnInteger:
-            # If page is not an integer, deliver first page.
+            
             joined_events = joined_paginator.page(1)
         except EmptyPage:
-            # If page is out of range (e.g. 9999), deliver last page of results.
+            
             joined_events = joined_paginator.page(joined_paginator.num_pages)
 
         context = {
@@ -423,27 +453,61 @@ class EventViews:
 
 
 class LFGViews:
+
     def createLfgPost(request):
-        group_type = request.POST['event-type']
+        group_type = request.POST['lfg-type']
         platform_type = request.POST['platform-type']
         commander_name = request.POST['commander-name']
         discord_link = request.POST['lfg-discord-link']
         location = request.POST['lfg-location']
-
-        if not location:
-            location = 'Not given'
+        ship = request.POST['ship']
+        rank = request.POST['rank']
+        message = request.POST['lfg-message']
 
         LFGPost.objects.create(
             platform=platform_type,
             post_type=group_type,
             discord_link=discord_link,
             commander=commander_name,
-            location=location
+            location=location,
+            ship=ship,
+            rank=rank,
+            message=message
         )
 
         response = {
             'status': 'success'
         }
+        return JsonResponse(response)
+
+    def checkForNew(request):
+        try:
+            last_id = json.loads(request.body)['last_id']
+                
+            # check for new post, new post will have greater ids than the last
+            new_posts = list(LFGPost.objects.filter(
+                id__gt=last_id
+            ).values(
+                'id',
+                'platform',
+                'post_type',
+                'discord_link',
+                'commander',
+                'location',
+                'ship',
+                'rank',
+                'message',
+            ).order_by('-id'))
+
+            response = {
+                'status': 'success',
+                'new_posts': new_posts
+            }
+        except KeyError:
+            response = {
+                'status': 'fail'
+            }
+
         return JsonResponse(response)
 
 
@@ -516,10 +580,18 @@ class Utility:
 
         return
 
+    def cleanOldLfgPosts():
+        utc_now_aware = datetime.utcnow().replace(tzinfo=pytz.utc)
+        one_hour_ago = utc_now_aware - timedelta(hours=1)
+        posts = LFGPost.objects.filter(date_created__lte=one_hour_ago)
+        
+        for i in posts:
+            i.delete()
+
+        return
 
 
 class TimezoneMiddleware(MiddlewareMixin):
-
 
     def process_request(self, request):
         tzname = request.session.get('django_timezone')
@@ -527,4 +599,3 @@ class TimezoneMiddleware(MiddlewareMixin):
             timezone.activate(pytz.timezone(tzname))
         else:
             timezone.deactivate()
-    

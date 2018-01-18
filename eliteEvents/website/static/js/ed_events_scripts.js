@@ -259,12 +259,12 @@ $(document).ready(function(){
 
     //Event type Select
     $(".event-type-img").click(function(e) {
-    	//add select class to element
-    	$(".event-type-img").removeClass('event-type-selected');
-    	$(this).addClass('event-type-selected');
+        //add select class to element
+        $(".event-type-img").removeClass('event-type-selected');
+        $(this).addClass('event-type-selected');
 
-    	//add value to input
-    	$("input[name='event-type']").val($(this).attr('data-type'));
+        //add value to input
+        $("input[name='event-type']").val($(this).attr('data-type'));
     });
 
 
@@ -282,9 +282,6 @@ $(document).ready(function(){
                 url: "/search/systems/",
                 data: JSON.stringify({system_query: system_query}), 
                 success: function(data){
-                    console.log(data);
-                    // stop loading animation
-                    $(".location-search-icon").removeClass("fa-pulse");
                     for ( i = 0; i < data.results.length; i++ ) { 
                         // create rows for slection table of top 5 results
                         result_html = '' +
@@ -298,7 +295,7 @@ $(document).ready(function(){
                     setTimeout(function(){
                         // empty location table
                         $("#location-results-table").empty();
-                    }, 10000);
+                    }, 20000);
 
                 },
                 fail: function(data){
@@ -442,6 +439,15 @@ $(document).ready(function(){
                             platform_icon = '<img class="event-platform-img-icon" src="/static/img/pc-icon.png" alt="PC" data-type="PC"/>';
                         }
 
+                        // type ime
+                        if( event_results[i].event_type == 'combat' ) {
+                            event_type_img = '<img class="event-type-img-sm" src="/static/img/rank-9-combat.png" alt="Combat" data-type="combat"/>';
+                        }else if( event_results[i].event_type == 'trade' ) {
+                            event_type_img = '<img class="event-type-img-sm" src="/static/img/rank-9-trading.png" alt="Trade" data-type="trade"/>';
+                        }else{
+                            event_type_img = '<img class="event-type-img-sm" src="/static/img/rank-9-exploration.png" alt="Exploration" data-type="exploration"/>';
+                        }
+
                         // truncate event name if nes
                         let event_name;
                         if( event_results[i].name.length > 20 ){
@@ -453,7 +459,7 @@ $(document).ready(function(){
 			    		//create event preview element
 			    		let event_preview_html = ''+
 			    		'<div class="event-preview" data-id="'+event_results[i].id+'">' +
-			    			'<img class="event-type-img-sm" src="http://edassets.org/img/pilots-federation/combat/rank-9-combat.png" alt="Combat" data-type="combat"/>' +
+			    			event_type_img +
 			    			'<p>'+event_name+'</p>' +
 			    			'<p>'+event_results[i].start_date+'</p>' + 
                             '<span>'+platform_icon+'</span>' +
@@ -480,7 +486,7 @@ $(document).ready(function(){
         dispalyEventDetails(event_id);
 	});
 
-    //
+    // featured event
     $(".featured-event-preview").click(function(e) {
         //dec event id
         let event_id = $(this).attr('data-id');
@@ -656,15 +662,95 @@ $(document).ready(function(){
     });
 
 
+    //lfg type Select
+    $(".lfg-type-img").click(function(e) {
+        //add select class to element
+        $(".lfg-type-img").removeClass('lfg-type-selected');
+        $(this).addClass('lfg-type-selected');
+
+        let group_type = $(this).attr('data-type');
+        let combat_ranks = [
+            'Select your rank',
+            'Harmless',
+            'Mostly Harmless',
+            'Novice',
+            'Competent',
+            'Expert',
+            'Master',
+            'Dangerous',
+            'Deadly',
+            'Elite'
+        ];
+
+        let trade_ranks = [
+            'Select your rank',
+            'Penniless',
+            'Mostly Penniless',
+            'Peddler',
+            'Dealer',
+            'Merchant',
+            'Broker',
+            'Entrepreneur',
+            'Tycoon',
+            'Elite'
+        ];
+
+        let exploration_ranks = [
+            'Select your rank',
+            'Aimless',
+            'Mostly Aimless',
+            'Scout',
+            'Surveyor',
+            'Trailblazer',
+            'Pathfinder',
+            'Ranger',
+            'Pioneer',
+            'Elite'
+        ];
+
+        //add value to input
+        $("input[name='lfg-type']").val(group_type);
+
+        // show corresponding rank dropdown
+        let rank_dropdown = $("select[name='rank']");
+        if( group_type === 'combat' ){
+            $("#rank-label").text('Combat Rank');
+            rank_dropdown.empty();
+            for( i in combat_ranks ){
+                let rank = combat_ranks[i];
+                let option = `<option value='${rank}'>${rank}</option>`;
+                rank_dropdown.append(option);
+            }
+        }else if( group_type === 'trading' ){
+            $("#rank-label").text('Trade Rank');
+            rank_dropdown.empty();
+            for( i in trade_ranks ){
+                let rank = trade_ranks[i];
+                let option = `<option value='${rank}'>${rank}</option>`;
+                rank_dropdown.append(option);
+            }
+        }else if( group_type === 'exploration' ){
+            $("#rank-label").text('Exploration Rank');
+            rank_dropdown.empty();
+            for( i in exploration_ranks ){
+                let rank = exploration_ranks[i];
+                let option = `<option value='${rank}'>${rank}</option>`;
+                rank_dropdown.append(option);
+            }
+        }
+    });
+
+
     //lfg create
     $("form[name='lfg-post-form']").submit(function(e){
         //Stop html form submission
         e.preventDefault();
 
         // check form inputs
-        let group_type = $("input[name='event-type']");
+        let group_type = $("input[name='lfg-type']");
         let platform_type = $("input[name='platform-type']");
         let commander_name = $("input[name='commander-name']");
+        let rank = $("select[name='rank']");
 
         if( !group_type.val() ){
             //send user alert 
@@ -682,6 +768,8 @@ $(document).ready(function(){
                 commander_name.css("border","1px solid #c06400;");
             }, 3000);
             return false
+        }else if( !rank.val() || rank.val() === 'Select your rank'){
+            alert('Please choose a rank');
         }
 
         // serialize and submit edit form

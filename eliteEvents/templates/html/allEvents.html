@@ -29,7 +29,7 @@
                             {% else %}
                                 <li class="disabled"><span>&laquo;</span></li>
                             {% endif %}
-                            {% for page_number in events.paginator.page_range %}
+                            {% for page_number in page_range %}
                                 {% if events.number == page_number %}
                                     <li class="active"><span>{{ page_number }} <span class="sr-only">(current)</span></span></li>
                                 {% else %}

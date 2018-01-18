@@ -11,22 +11,22 @@
     		<div class="lfg-form-wrap">
 				<div class="row">
 			    	<div class="col-sm-6">
-			    		<h3>Event Type</h3>
-			            <ul class="event-type-list">
+			    		<h3>Group Type</h3>
+			            <ul class="lfg-type-list">
 			            	<li>
-			            		<img class="event-type-img" src="{% static 'img/rank-9-combat.png' %}" alt="Combat" data-type="combat"/><br>
+			            		<img class="lfg-type-img" src="{% static 'img/rank-9-combat.png' %}" alt="Combat" data-type="combat"/><br>
 			            		Combat
 			            	</li>
 			            	<li>
-			            		<img class="event-type-img" src="{% static 'img/rank-9-exploration.png' %}" alt="Exploration" data-type="exploration"/><br>
+			            		<img class="lfg-type-img" src="{% static 'img/rank-9-exploration.png' %}" alt="Exploration" data-type="exploration"/><br>
 			            		Exploration
 			            	</li>
 			            	<li>
-			            		<img class="event-type-img" src="{% static 'img/rank-9-trading.png' %}" alt="Trading" data-type="trading"/><br>
+			            		<img class="lfg-type-img" src="{% static 'img/rank-9-trading.png' %}" alt="Trading" data-type="trading"/><br>
 			            		Trading
 			            	</li>
 			            </ul>
-			            <input type="hidden" name="event-type"/>
+			            <input type="hidden" name="lfg-type"/>
 			    	</div>
 			    	<div class="col-sm-6">
 			    		<h3>Platform</h3>
@@ -54,11 +54,59 @@
 		    			<input class="lfg-input" name="commander-name" placeholder="Commander Name"/>
 		    		</div>
 		    		<div class="col-sm-6 col-md-4">
+		    			<label>Ship</label>
+		    			<br>
+		    			<select class="lfg-dropdown" name="ship">
+		    				<option>Select your ship</option>
+		    				<option value="Adder">Adder</option>
+		    				<option value="Anaconda">Anaconda</option>
+		    				<option value="Asp Explorer">Asp Explorer</option>
+		    				<option value="Asp Scout">Asp Scout</option>
+		    				<option value="Beluga Liner">Beluga Liner</option>
+		    				<option value="Cobra MkIII">Cobra MkIII</option>
+		    				<option value="Cobra MkIV">Cobra MkIV</option>
+		    				<option value="Diamondback Explorer">Diamondback Explorer</option>
+		    				<option value="Diamondback Scout">Diamondback Scout</option>
+		    				<option value="Dolphin">Dolphin</option>
+		    				<option value="Eagle MkII">Eagle MkII</option>
+		    				<option value="Federal Assault Ship">Federal Assault Ship</option>
+		    				<option value="Federal Corvette">Federal Corvette</option>
+		    				<option value="Federal Dropship">Federal Dropship</option>
+		    				<option value="Federal Gunship">Federal Gunship</option>
+		    				<option value="Fer-de-Lance">Fer-de-Lance</option>
+		    				<option value="Hauler">Hauler</option>
+		    				<option value="Imperial Clipper">Imperial Clipper</option>
+		    				<option value="Imperial Courier">Imperial Courier</option>
+		    				<option value="Imperial Cutter">Imperial Cutter</option>
+		    				<option value="Imperial Eagle">Imperial Eagle</option>
+		    				<option value="Keelback">Keelback</option>
+		    				<option value="Orca">Orca</option>
+		    				<option value="Python">Python</option>
+		    				<option value="Sidewinder">Sidewinder</option>
+		    				<option value="Type-10 Defender">Type-10 Defender</option>
+		    				<option value="Type-6 Transporter">Type-6 Transporter</option>
+		    				<option value="Type-7 Transporter">Type-7 Transporter</option>
+		    				<option value="Type-9 Heavy">Type-9 Heavy</option>
+		    				<option value="Viper MkIII">Viper MkIII</option>
+		    				<option value="Viper MkIV">Viper MkIV</option>
+		    				<option value="Vulture">Vulture</option>
+		    			</select>
+		    		</div>
+		    		<div class="col-sm-12 col-md-4">
+		    			<label id="rank-label">Combat Rank</label>
+		    			<br>
+		    			<select class="lfg-dropdown" name="rank">
+		    				<option value="harmless">Choose group type 1st</option>
+		    			</select>
+		    		</div>
+		    	</div>
+		    	<div class="row">
+		    		<div class="col-sm-4">
 		    			<label for="lfg-activity">Discord Server</label>
 		    			<br>
 		            	<input class="discord-input" name="lfg-discord-link" placeholder="Discord Server Link" type="text">
 		    		</div>
-		    		<div class="col-sm-6 col-md-4">
+		    		<div class="col-sm-4">
 		    			<label for="lfg-activity">Location</label>
 		    			<br>
 			            <input class="event-location" name="lfg-location" placeholder="Location" type="text"  autocomplete="off">
@@ -66,50 +114,87 @@
 			            	<table id="location-results-table"></table>
 			            </div>
 		    		</div>
+		    		<div class="col-sm-4">
+		    			<label for="lfg-message">Message</label>
+		    			<br>
+			            <textarea class="lfg-message" name="lfg-message" placeholder="Please add a brief message"></textarea>
+		    		</div>
 		    	</div>
 		    	<div class="row">
 		    		{% csrf_token %}
 		    		<button class="btn create-lfg-post">Create</button>
-		    		}
 		    	</div>
 	    	</div>
 	    </form>
-		<div class="row lfg-post-table-wrap">
-			<table>
-				<tr>
-				    <th>Type</th>
-				    <th>Platform</th>
-				    <th>Commander</th>
-				    <th>Discord</th>
-				    <th>Location</th>
-			  	</tr>
-			  	{% for post in posts %}
-			  		<tr>
-			  			<th style="width: 15%;">
-			  				{% if post.group_type == 'combat' %}
-			  					<img class="event-type-img-sm" src="{% static 'img/rank-9-combat.png' %}" alt="Combat" data-type="combat"/>
-			  				{% elif post.group_type == 'exploration' %}
-			  					<img class="event-type-img-sm" src="{% static 'img/rank-9-exploration.png' %}" alt="Exploration" data-type="exploration"/>
+		<div class="row lfg-posts">
+			{% if posts %}
+				<input type="hidden" name="lfg-last-post-id" value="{{ last_id }}"/>
+				{% for post in posts %}
+					<div class="row post-wrap">
+						<div class="col-lg-2 text-center">
+							{% if post.post_type == 'combat' %}
+			  					<img class="event-type-img-sm" src="{% static 'img/rank-9-combat.png' %}" alt="Combat" data-type="combat" style="width:35%;"/>
+			  				{% elif post.post_type == 'exploration' %}
+			  					<img class="event-type-img-sm" src="{% static 'img/rank-9-exploration.png' %}" alt="Exploration" data-type="exploration" style="width:35%;"/>
 		  					{% else %}
-		  						<img class="event-type-img-sm" src="{% static 'img/rank-9-trading.png' %}" alt="Trading" data-type="trading"/>
+		  						<img class="event-type-img-sm" src="{% static 'img/rank-9-trading.png' %}" alt="Trading" data-type="trading" style="width:35%;"/>
 	  						{% endif %}
-			  			</th>
-			  			<th  style="width: 15%;">
-			  				{% if event.platform == 'XB' %}
-			  					<img class="event-platform-img-icon" src="{% static 'img/xbox-icon-ed-org.png' %}" alt="XBox" data-type="XB"/>
+	  						<br>
+	  						{% if event.platform == 'XB' %}
+			  					<img class="event-platform-img-icon" src="{% static 'img/xbox-icon-ed-org.png' %}" alt="XBox" data-type="XB" style="width:35%;"/>
 			  				{% elif event.platform == 'PS' %}
-			  					<img class="event-platform-img-icon" src="{% static 'img/Playstation-icon.png' %}" alt="Playstation" data-type="PS"/>
+			  					<img class="event-platform-img-icon" src="{% static 'img/Playstation-icon.png' %}" alt="Playstation" data-type="PS" style="width:35%;"/>
 		  					{% else %}
-		  						<img class="event-platform-img-icon" src="{% static 'img/pc-icon.png' %}" alt="PC" data-type="PC"/>
+		  						<img class="event-platform-img-icon" src="{% static 'img/pc-icon.png' %}" alt="PC" data-type="PC"  style="width:35%;"/>
 	  						{% endif %}
-			  			</th>
-					    <th>{{ post.commander }}</th>
-					    <th>{% if post.discord_link %}{{ post.discord_link }}{% else %}Not Given{% endif %}</th>
-					    <th>{% if post.location %}{{ post.location }}{% else %}Not Given{% endif %}</th>
-			  		</tr>
-			  	{% endfor %}
-			</table>
+						</div>
+						<div class="col-lg-4 text-left">
+							<div class="row ">
+								<div class="col-lg-5">
+									<p>Commander: {{ post.commander }}</p>
+									<p>Rank: {{ post.rank }}</p>
+									<p>Ship: {{ post.ship }}</p>
+								</div>
+								<div class="col-lg-7 text-left">
+									<p>Discord: {% if post.discord_link %}<a href="{{ post.discord_link }}" target="_blank">{{ post.discord_link|truncatechars:30 }}</a>{% else %}Not Given{% endif %}</p>
+							    	<p>Location: {% if post.location %}{{ post.location }}{% else %}Not Given{% endif %}</p>
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-4">
+							<p>{{ post.message }}</p>
+						</div>
+						<div class="col-lg-1">
+							<p class="center-vert">{{ post.timeSinceCreation }}</p>
+						</div>
+					</div>
+				{% endfor %}
+			{% else %}
+				<p class="center-hor">Sorry no posts at this time :(</p>
+			{% endif %}
 		</div>
-		    
+		<div class="row">
+            {% if posts.has_other_pages %}
+                <ul class="pagination">
+                    {% if posts.has_previous %}
+                        <li><a href="?page={{ posts.previous_page_number }}">&laquo;</a></li>
+                    {% else %}
+                        <li class="disabled"><span>&laquo;</span></li>
+                    {% endif %}
+                    {% for page_number in page_range %}
+                        {% if posts.number == page_number %}
+                            <li class="active"><span>{{ page_number }} <span class="sr-only">(current)</span></span></li>
+                        {% else %}
+                            <li><a href="?page={{ page_number }}">{{ page_number }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if posts.has_next %}
+                        <li><a href="?page={{ posts.next_page_number }}">&raquo;</a></li>
+                    {% else %}
+                        <li class="disabled"><span>&raquo;</span></li>
+                    {% endif %}
+                </ul>
+            {% endif %}
+        </div>
     </main>
 {% endblock %}

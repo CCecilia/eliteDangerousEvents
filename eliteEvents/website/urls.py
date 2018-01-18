@@ -23,5 +23,6 @@ urlpatterns = [
     path('event/details/', views.EventViews.eventDetails, name='eventDetails'),
     path('event/join/', views.EventViews.eventJoin, name='eventJoin'),
     path('lfg/create/', views.LFGViews.createLfgPost, name='createLfgPost'),
+    path('lfg/check/', views.LFGViews.checkForNew, name='checkForNew'),
     path('search/systems/', views.Utility.searchSystems, name='searchSystems')
 ]
