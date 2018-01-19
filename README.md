@@ -44,11 +44,20 @@ Install dependencies from requirements.txt
 pip install -r requirements.txt
 ```
 
+Database
+
+```
+The project is setup for a MySql bu the the sqlite3 database code is just commented out
+so if you want to use the slqlite DB just comment out the MySql code. But if you use the 
+MySql databse be sure to add the credntial to secret.py as explained in the next step.
+```
+
 Create optional secret.py file in eliteDangerousEvents/eliteEvents/eliteEvents/
 
 ```
 NOTE
-secret.py should contain the django SECRET KEY and Google Oauth key as below.
+secret.py should contain the django SECRET KEY and Google Oauth key as below. As well 
+as the database information if you decide to to use a mysql database. 
 If no secret.py is created a random secret key is generated and Oauth is unusable.
 python manage.py runserver
 ```
@@ -61,6 +70,10 @@ google_oauth_secret = GOOGLE API ID
 django_secret_key = YOUR DJANGO SECRET KEY
 facebook_oauth_key = FB App ID
 facebook_oauth_secret = FB App Secret key
+database_name = SCHEMA NAME
+database_username = USERNAME
+database_password = PASSWORD
+database_endpoint = DATABASE URL
 ```
 
 Start your local server
