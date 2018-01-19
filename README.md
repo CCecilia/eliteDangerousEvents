@@ -47,9 +47,9 @@ pip install -r requirements.txt
 Database
 
 ```
-The project is setup for a MySql bu the the sqlite3 database code is just commented out
-so if you want to use the slqlite DB just comment out the MySql code. But if you use the 
-MySql databse be sure to add the credntial to secret.py as explained in the next step.
+The project is setup for MySql but the the default Sqlite3 database code is just commented out
+so if you want to use the slqlite DB just comment out the MySql code. But if you use a 
+MySql database be sure to add the credentials to secret.py as explained in the next step.
 ```
 
 Create optional secret.py file in eliteDangerousEvents/eliteEvents/eliteEvents/
@@ -90,7 +90,7 @@ Django version 2.0, using settings 'eliteEvents.settings'
 Starting development server at http://127.0.0.1:8000/
 Quit the server with CONTROL-C.
 ```
-Copy and paste http://127.0.0.1:8000/ into your browser.
+Copy and paste http://localhost:8000/ into your browser.
 
 ## Running the tests
 
