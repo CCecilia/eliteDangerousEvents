@@ -101,19 +101,19 @@ python manage.py test
 
 ## Optional
 Auto fill location information
+download [populated_systems.json](https://eddb.io/archive/v5/systems_populated.json)
 
 ```
-For auto-filling of populated systems download [populated_systems.json](https://eddb.io/archive/v5/systems_populated.json) 
-and save to website/media/uploads. Then call Utility.parsePopulatedSystems() in website/views.py to
-to parse the data in the file.
+For auto-filling of populated systems download file and save to website/media/uploads. 
+Then call Utility.parsePopulatedSystems() in website/views.py to parse the data in the file.
 ```
 Crontab commands
-
+[additional info](https://github.com/kraiz/django-crontab)
 ```
 python manage.py crontab add - add the hourly and daily cleaning of expired events/lfg post jobs
 python manage.py crontab show - show active jobs
 python manage.py crontab remove - remove active jobs
-[additional info](https://github.com/kraiz/django-crontab)
+
 ```
 
 ## Built With
