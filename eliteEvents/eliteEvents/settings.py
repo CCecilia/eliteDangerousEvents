@@ -84,10 +84,21 @@ TEMPLATES = [
 WSGI_APPLICATION = 'eliteEvents.wsgi.application'
 
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE':'django.db.backends.mysql',
+        'NAME': database_name, 
+        'USER': database_username,
+        'PASSWORD': database_password,
+        'HOST': database_endpoint,
+        'PORT': '3306',
     }
 }
 
