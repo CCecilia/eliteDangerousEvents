@@ -53,7 +53,7 @@ MySql database be sure to add the credentials to secret.py as explained in the n
 is advised for development.
 ```
 
-Create optional secret.py file in eliteDangerousEvents/eliteEvents/eliteEvents/
+Create secret.py file in eliteDangerousEvents/eliteEvents/eliteEvents/
 
 ```
 NOTE
