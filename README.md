@@ -1,4 +1,4 @@
-# [Elite Dangerous Events](http://elitedangerousevents.us-east-1.elasticbeanstalk.com/)
+# [Elite Dangerous Events](http://elitedangerousevents.us-east-1.elasticbeanstalk.com/) 1.0.0
 
 A site for commanders in the Elite Dangerous galaxy to create and join in player created events. 
 
@@ -104,6 +104,7 @@ python manage.py test
 * [PIP](https://pypi.python.org/pypi/pip)
 * [Django](https://www.djangoproject.com/)
 * [Bootstrap](http://getbootstrap.com/)
+* other dependecies in requirements.txt
 
 ## Versioning
 
