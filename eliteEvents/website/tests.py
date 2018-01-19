@@ -1,12 +1,11 @@
 
 from datetime import timedelta
-from django.test import TestCase, Client, tag
 from django.contrib.auth.models import User
+from django.test import TestCase, Client, tag
 from django.urls import reverse
 from django.utils import timezone
 import json
 import lorem
-import pytz
 
 from .models import Event, SolarSystem, LFGPost
 
@@ -225,8 +224,6 @@ class EventModelTests(TestCase):
             'time-zone': 'America/New_York'
         })
 
-        new_event_count = Event.objects.all().count()
-
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.content)['status'], 'fail')
         self.assertEqual(json.loads(response.content)['error_msg'], 'Start date needs to be in the future.')
@@ -265,7 +262,7 @@ class EventModelTests(TestCase):
         self.assertEqual(response.status_code, 302)
 
     @tag('quick')
-    def test_myEvents_redirect(self):
+    def test_myEvents(self):
         user_1 = User.objects.get(pk=1)
         user_2 = User.objects.get(pk=2)
 
@@ -370,7 +367,7 @@ class AjaxViewsTests(TestCase):
         )
 
         for i in range(5):
-            SolarSystem.objects.create(name="LTT 944{}".format(i) )
+            SolarSystem.objects.create(name="LTT 944{}".format(i))
 
     @tag('quick')
     def test_ajax_register_success(self):
@@ -433,7 +430,7 @@ class AjaxViewsTests(TestCase):
     def test_search_systems(self):
         # Check systems search
         response = self.c.post(
-            reverse('website:searchSystems'), 
+            reverse('website:searchSystems'),
             json.dumps({'system_query': 'LTT'}),
             'json',
             HTTP_X_REQUESTED_WITH='XMLHttpRequest',
@@ -489,12 +486,11 @@ class LFGPostModelTests(TestCase):
 
     def test_check_for_new(self):
         response = self.c.post(
-            reverse('website:checkForNew'), 
-            json.dumps({'last_id': 48,}),
+            reverse('website:checkForNew'),
+            json.dumps({'last_id': 48}),
             'json',
-            HTTP_X_REQUESTED_WITH='XMLHttpRequest',
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
         )
         
         self.assertEqual(len(json.loads(response.content)['new_posts']), 2)
         self.assertEqual(json.loads(response.content)['status'], 'success')
-
