@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'social_django'
+    'social_django',
+    'django_crontab'
 ]
 
 
@@ -144,3 +145,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'website/static/')
 LOGIN_URL = '/signin/'
 LOGIN_REDIRECT_URL = '/'
 
+
+CRONJOBS = [
+    ('0 */1 * * *', 'eliteEvents.cron.hourlyClean()'),
+    ('59 23 */1 * 0-6', 'eliteEvents.cron.dailyClean()')
+]

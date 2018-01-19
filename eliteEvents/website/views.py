@@ -21,7 +21,6 @@ class HtmlRendering:
     def index(request):
         all_events = Event.objects.all().order_by('-attendees')
         featuredEvents = all_events[:8]
-        Utility.parsePopulatedSystems()
 
         context = {
             'page': 'index',
@@ -568,15 +567,11 @@ class Utility:
         return local_dt
 
     def cleanEndedEvents():
-        # # get end events
-        # ended_events = Event.objects.filter(end_date__lte=timezone.now())
+        # get end events
+        ended_events = Event.objects.filter(end_date__lte=datetime.utcnow())
 
-        # for event in ended_events:
-        #     event.delete()
-
-        for event in Event.objects.all():
-            event.name = 'task ran'
-            event.save()
+        for event in ended_events:
+            event.delete()
 
         return
 
