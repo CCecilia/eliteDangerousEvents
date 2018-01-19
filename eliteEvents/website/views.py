@@ -11,7 +11,6 @@ from django.utils import timezone
 from django.utils.deprecation import MiddlewareMixin
 import ijson
 import json
-import lorem
 import os
 import pytz
 from .models import Event, SolarSystem, LFGPost
@@ -22,6 +21,7 @@ class HtmlRendering:
     def index(request):
         all_events = Event.objects.all().order_by('-attendees')
         featuredEvents = all_events[:8]
+        Utility.parsePopulatedSystems()
 
         context = {
             'page': 'index',
@@ -526,7 +526,7 @@ class Utility:
         # send reponse JSON
         return JsonResponse(response)
 
-    def parsePopulatedSystems(request):
+    def parsePopulatedSystems():
         BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
         with open(BASE_DIR + '/website/media/uploads/populated_systems.json', "rb") as f:
