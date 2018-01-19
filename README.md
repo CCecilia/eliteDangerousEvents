@@ -49,7 +49,8 @@ Database
 ```
 The project is setup for MySql but the the default Sqlite3 database code is just commented out
 so if you want to use the slqlite DB just comment out the MySql code. But if you use a 
-MySql database be sure to add the credentials to secret.py as explained in the next step.
+MySql database be sure to add the credentials to secret.py as explained in the next step. Sqlite3 
+is advised for development.
 ```
 
 Create optional secret.py file in eliteDangerousEvents/eliteEvents/eliteEvents/
@@ -96,6 +97,23 @@ Copy and paste http://localhost:8000/ into your browser.
 
 ```
 python manage.py test
+```
+
+## Optional
+Auto fill location information
+
+```
+For auto-filling of populated systems download [populated_systems.json](https://eddb.io/archive/v5/systems_populated.json) 
+and save to website/media/uploads. Then call Utility.parsePopulatedSystems() in website/views.py to
+to parse the data in the file.
+```
+Crontab commands
+
+```
+python manage.py crontab add - add the hourly and daily cleaning of expired events/lfg post jobs
+python manage.py crontab show - show active jobs
+python manage.py crontab remove - remove active jobs
+[additional info](https://github.com/kraiz/django-crontab)
 ```
 
 ## Built With
