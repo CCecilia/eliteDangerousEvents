@@ -11,7 +11,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # gen random secret key
 random_key = ''.join([random.SystemRandom().choice("{}{}{}".format(string.ascii_letters, string.digits, string.punctuation)) for i in range(50)])
 
-DEBUG = False
+DEBUG = True
 
 if django_secret_key:
     SECRET_KEY = django_secret_key
@@ -147,12 +147,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'website/static/')
 LOGIN_URL = '/signin/'
 LOGIN_REDIRECT_URL = '/'
 
-# use https redirection when not in dev
-if not DEBUG:
-    SECURE_SSL_REDIRECT = True
-    SECURE_SSL_HOST = 'www.elitedangerousevents.com'
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
 
 CRONJOBS = [
