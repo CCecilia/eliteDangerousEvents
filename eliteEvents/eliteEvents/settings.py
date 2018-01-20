@@ -34,6 +34,7 @@ else:
 
 ALLOWED_HOSTS = [
     'localhost',
+    '127.0.0.1',
     'elitedangerousevents.us-east-1.elasticbeanstalk.com',
     'www.elitedangerousevents.com'
 ]
@@ -145,6 +146,13 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'website/static/')
 
 LOGIN_URL = '/signin/'
 LOGIN_REDIRECT_URL = '/'
+
+# use https redirection when not in dev
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SECURE_SSL_HOST = 'www.elitedangerousevents.com'
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
 
 
 CRONJOBS = [
