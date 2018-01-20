@@ -11,7 +11,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # gen random secret key
 random_key = ''.join([random.SystemRandom().choice("{}{}{}".format(string.ascii_letters, string.digits, string.punctuation)) for i in range(50)])
 
-DEBUG = False
+DEBUG = True
 
 if django_secret_key:
     SECRET_KEY = django_secret_key

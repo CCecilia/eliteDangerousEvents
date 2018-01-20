@@ -70,10 +70,12 @@ body {
   padding-right: 5rem;
   margin-bottom: 2rem;
   background-color:  #333;
+  z-index: 999;
 }
 
 .masthead-brand {
   margin-bottom: 0;
+  z-index: 999;
 }
 
 .nav-masthead .nav-link {
@@ -82,6 +84,7 @@ body {
   color: rgba(255,255,255,.5);
   background-color: transparent;
   border-bottom: .25rem solid transparent;
+  z-index: 999;
 }
 
 .nav-masthead .nav-link:hover,
@@ -196,6 +199,11 @@ body {
 .register-error,.login-error{
   display: none;
   color: red;
+}
+
+.google-signin-btn{
+  width: 12%;
+  height: auto;
 }
 
 
@@ -369,12 +377,13 @@ body {
   cursor: pointer;
 }
 .lfg-dropdown{
-  width: 100%;
+  width: 98%;
+  padding: 2%;
   margin-top: 2%;
   background-color: #333;
   color: #ff7100;
   border: 1px solid #ff7100;
-  margin-top: 
+  z-index: 1;
 }
 .lfg-post-form{
   padding: 2% 0;
@@ -411,8 +420,18 @@ body {
   margin: 0 auto;
 }
 
+.lfg-img{
+  width: 3.3em;
+}
+
 #exploration-rank-dropdown, #trade-rank-dropdown{
   display: none;
+}
+
+.paypal-donate-img{
+   width: 15%; 
+   height: auto; 
+   cursor: pointer;
 }
 /* Affix and center */
 
@@ -489,7 +508,7 @@ body {
   .nav-masthead{
     width: 100%;
     text-align: center;
-    padding-left: 2%;
+    margin: 0 auto;
     font-size: .3em;
   }
 
@@ -503,6 +522,69 @@ body {
 
   .joined-events{
     border-left:0px;
+  }
+  .post-wrap{
+    font-size: .5em;
+  }
+
+  .featured-event-preview, .event-preview{
+    width: 50%;
+  }
+
+  .event-platform-img-icon{
+    width: 20%;
+  }
+
+  #event-details-popup{
+    width: 75%;
+    left: 12%;
+  }
+
+  .post-wrap{
+    padding: 1%;
+  }
+
+  .lfg-type-img{
+    width: 2.5em;
+  }
+
+  .platform-type-img{
+    width: 2em;
+  }
+
+  .lfg-post-type-col{
+    width: 25%;
+    padding-top: 9%;
+  }
+
+  .lfg-post-commander-col{
+    width:35%;
+  }
+
+  .lfg-img{
+    width:100%;
+  }
+
+  .lfg-post-msg-col{
+    width: 30%;
+  }
+
+  .lfg-post-time-col{
+    width: 10%;
+    padding-top: 15%;
+  }
+  .paypal-donate-img{
+    width: 35%; 
+    height: auto; 
+    cursor: pointer;
+  }
+
+  .create-lfg-toggle{
+    width: 50%;
+  }
+
+  .google-signin-btn{
+    width: 35%;
   }
 }
 @media (max-width: 330px) {

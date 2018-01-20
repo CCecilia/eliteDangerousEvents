@@ -5,8 +5,8 @@
 		<h1 class="cover-heading">{{ coverHeading }}</h1>
     	<form class="lfg-post-form" name="lfg-post-form" method="POST" action="{% url 'website:createLfgPost' %}">
     		<div class="row lfg-post-form-open-close-wrap">
-    			<div class="col-sm-6 text-left">Create Post</div> 
-    			<div class="col-sm-6 text-right"><i class="fa fa-chevron-down toggle-lfg-post"></i></div> 
+    			<div class="col-sm-6 text-left create-lfg-toggle">Create Post</div> 
+    			<div class="col-sm-6 text-right create-lfg-toggle"><i class="fa fa-chevron-down toggle-lfg-post"></i></div> 
     		</div>
     		<div class="lfg-form-wrap">
 				<div class="row">
@@ -131,24 +131,24 @@
 				<input type="hidden" name="lfg-last-post-id" value="{{ last_id }}"/>
 				{% for post in posts %}
 					<div class="row post-wrap">
-						<div class="col-lg-2 text-center">
+						<div class="col-lg-2 lfg-post-type-col text-center">
 							{% if post.post_type == 'combat' %}
-			  					<img class="event-type-img-sm" src="{% static 'img/rank-9-combat.png' %}" alt="Combat" data-type="combat" style="width:35%;"/>
+			  					<img class="event-type-img-sm lfg-img" src="{% static 'img/rank-9-combat.png' %}" alt="Combat" data-type="combat"/>
 			  				{% elif post.post_type == 'exploration' %}
-			  					<img class="event-type-img-sm" src="{% static 'img/rank-9-exploration.png' %}" alt="Exploration" data-type="exploration" style="width:35%;"/>
+			  					<img class="event-type-img-sm lfg-img" src="{% static 'img/rank-9-exploration.png' %}" alt="Exploration" data-type="exploration"/>
 		  					{% else %}
-		  						<img class="event-type-img-sm" src="{% static 'img/rank-9-trading.png' %}" alt="Trading" data-type="trading" style="width:35%;"/>
+		  						<img class="event-type-img-sm lfg-img" src="{% static 'img/rank-9-trading.png' %}" alt="Trading" data-type="trading"/>
 	  						{% endif %}
 	  						<br>
 	  						{% if event.platform == 'XB' %}
-			  					<img class="event-platform-img-icon" src="{% static 'img/xbox-icon-ed-org.png' %}" alt="XBox" data-type="XB" style="width:35%;"/>
+			  					<img class="event-platform-img-icon lfg-img" src="{% static 'img/xbox-icon-ed-org.png' %}" alt="XBox" data-type="XB"/>
 			  				{% elif event.platform == 'PS' %}
-			  					<img class="event-platform-img-icon" src="{% static 'img/Playstation-icon.png' %}" alt="Playstation" data-type="PS" style="width:35%;"/>
+			  					<img class="event-platform-img-icon lfg-img" src="{% static 'img/Playstation-icon.png' %}" alt="Playstation" data-type="PS"/>
 		  					{% else %}
-		  						<img class="event-platform-img-icon" src="{% static 'img/pc-icon.png' %}" alt="PC" data-type="PC"  style="width:35%;"/>
+		  						<img class="event-platform-img-icon lfg-img" src="{% static 'img/pc-icon.png' %}" alt="PC" data-type="PC" />
 	  						{% endif %}
 						</div>
-						<div class="col-lg-4 text-left">
+						<div class="col-lg-4 lfg-post-commander-col text-left">
 							<div class="row ">
 								<div class="col-lg-5">
 									<p>Commander: {{ post.commander }}</p>
@@ -161,10 +161,10 @@
 								</div>
 							</div>
 						</div>
-						<div class="col-lg-4">
+						<div class="col-lg-4 lfg-post-msg-col">
 							<p>{{ post.message }}</p>
 						</div>
-						<div class="col-lg-1">
+						<div class="col-lg-1 lfg-post-time-col">
 							<p class="center-vert">{{ post.timeSinceCreation }}</p>
 						</div>
 					</div>
