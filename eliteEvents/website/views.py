@@ -585,6 +585,12 @@ class Utility:
 
         return
 
+    def sitemap(request):
+        return render(request, 'sitemap.xml')
+
+    def robots(request):
+        return render(request, 'robots.txt')
+
 
 class TimezoneMiddleware(MiddlewareMixin):
 
